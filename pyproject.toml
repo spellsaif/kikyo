@@ -3,13 +3,15 @@ requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [project]
-name = "kikyo"
+name = "kikyo-notebook"
 version = "0.2.0"
 description = "A reactive, collaborative, git-friendly Python notebook."
 readme = "README.md"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.11"
-authors = [{ name = "Kikyo Contributors" }]
+authors = [
+    { name = "Nanasi", email = "this.saif.email@gmail.com" }
+]
 keywords = ["notebook", "jupyter", "reactive", "collaborative", "crdt", "git-friendly"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -18,7 +20,10 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Framework :: FastAPI",
     "License :: OSI Approved :: Apache Software License",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Interpreters",
 ]
+
 dependencies = [
     "fastapi>=0.110.0",
     "uvicorn[standard]>=0.30.0",
@@ -34,6 +39,12 @@ dependencies = [
     "rich>=13.7.0",
     "watchfiles>=0.22.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/spellsaif/kikyo"
+Documentation = "https://github.com/spellsaif/kikyo#readme"
+Repository = "https://github.com/spellsaif/kikyo"
+Issues = "https://github.com/spellsaif/kikyo/issues"
 
 [project.optional-dependencies]
 dev = [
@@ -62,3 +73,16 @@ testpaths = ["tests"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/kikyo"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src/kikyo",
+    "/tests",
+    "/README.md",
+    "/LICENSE",
+    "/pyproject.toml",
+]
+exclude = [
+    "/notebooks",
+    "*.kout",
+]
