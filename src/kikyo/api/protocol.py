@@ -57,6 +57,11 @@ class CompleteRequest(msgspec.Struct, tag="complete", tag_field="op"):
     cursor_pos: int
 
 
+class InputReply(msgspec.Struct, tag="input_reply", tag_field="op"):
+    value: str
+    cell_id: str = ""
+
+
 ClientMsg = (
     RunCell
     | RunReactive
@@ -69,6 +74,7 @@ ClientMsg = (
     | MoveCell
     | ReorderCells
     | CompleteRequest
+    | InputReply
 )
 
 

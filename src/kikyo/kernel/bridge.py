@@ -28,19 +28,22 @@ class KernelBridge:
         self.kernel = kernel
         self._subscribers: set[asyncio.Queue[KernelEvent]] = set()
         self._reader_task: asyncio.Task | None = None
+        self._stdin_task: asyncio.Task | None = None
         self._active_executions: dict[str, asyncio.Event] = {}
         self._execution_errors: dict[str, bool] = {}
 
     async def start(self) -> None:
         self._reader_task = asyncio.create_task(self._read_iopub())
+        self._stdin_task = asyncio.create_task(self._read_stdin())
 
     async def stop(self) -> None:
-        if self._reader_task:
-            self._reader_task.cancel()
-            try:
-                await self._reader_task
-            except asyncio.CancelledError:
-                pass
+        for task in (self._reader_task, self._stdin_task):
+            if task:
+                task.cancel()
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    pass
 
     async def _read_iopub(self) -> None:
         client = self.kernel.client
@@ -78,13 +81,49 @@ class KernelBridge:
                 except asyncio.QueueFull:
                     pass
 
+    async def _read_stdin(self) -> None:
+        client = getattr(self.kernel, "client", None)
+        if not client:
+            return
+        while True:
+            try:
+                msg = await client.get_stdin_msg(timeout=1.0)
+            except asyncio.CancelledError:
+                break
+            except (asyncio.TimeoutError, TimeoutError, queue.Empty):
+                continue
+            except Exception as e:
+                log.warning("stdin stream error: %s", e)
+                await asyncio.sleep(0.1)
+                continue
+
+            msg_type = msg.get("msg_type", "")
+            content = msg.get("content", {})
+            parent_id = msg.get("parent_header", {}).get("msg_id")
+
+            evt = KernelEvent(msg_type=msg_type, content=content, parent_id=parent_id)
+
+            # Fan out to all active listener queues
+            for q in list(self._subscribers):
+                try:
+                    q.put_nowait(evt)
+                except asyncio.QueueFull:
+                    pass
+
     async def execute(self, code: str) -> str:
         """Submits code to kernel shell socket and returns msg_id."""
         client = getattr(self.kernel, "client", None)
         if not client:
             raise RuntimeError("Kernel client is not ready or disconnected")
-        msg_id = client.execute(code, store_history=False, allow_stdin=False)
+        msg_id = client.execute(code, store_history=False, allow_stdin=True)
         return msg_id
+
+    def send_input(self, value: str) -> None:
+        """Sends raw input response to unblock an input_request prompt."""
+        client = getattr(self.kernel, "client", None)
+        if not client:
+            raise RuntimeError("Kernel client is not ready or disconnected")
+        client.input(value)
 
     async def execute_and_wait(
         self,
@@ -102,12 +141,23 @@ class KernelBridge:
             msg_id = await self.execute(code)
             self._active_executions[msg_id] = done_event
             self._execution_errors[msg_id] = False
+            is_waiting_input = False
 
             while not done_event.is_set():
                 try:
-                    evt = await asyncio.wait_for(event_queue.get(), timeout=timeout)
-                    if evt.parent_id == msg_id and on_event:
-                        await on_event(evt)
+                    current_timeout = None if is_waiting_input else timeout
+                    if current_timeout is not None:
+                        evt = await asyncio.wait_for(event_queue.get(), timeout=current_timeout)
+                    else:
+                        evt = await event_queue.get()
+
+                    if evt.parent_id == msg_id:
+                        if evt.msg_type == "input_request":
+                            is_waiting_input = True
+                        elif is_waiting_input:
+                            is_waiting_input = False
+                        if on_event:
+                            await on_event(evt)
                 except asyncio.TimeoutError:
                     log.error("Execution timed out for msg_id=%s", msg_id)
                     return False

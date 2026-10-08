@@ -36,6 +36,7 @@ async def test_session_execution_and_sidecar(tmp_path: Path):
 
         # Trigger reactive run from c1
         await session.handle_control(RunReactive(cell_id="c1"))
+        await session.wait_idle()
 
         # Verify sidecar recorded stdout output for c3
         outputs_c3 = session.sidecar.get_outputs("c3")
@@ -76,6 +77,7 @@ async def test_session_markdown_cell_ops_and_autocomplete(tmp_path: Path):
         # 1. Run c1 so math is imported in kernel namespace
         from kikyo.api.protocol import RunCell, CompleteRequest, ChangeCellType, InsertCell, DeleteCell
         await session.handle_control(RunCell(cell_id="c1"))
+        await session.wait_idle()
 
         # Test autocompletion via CompleteRequest
         await session.handle_control(
@@ -140,6 +142,69 @@ async def test_session_move_cell(tmp_path: Path):
         assert [c.id for c in session.notebook.cells] == ["c1", "c2", "c3"]
         persisted = load_file(nb_path)
         assert [c.id for c in persisted.cells] == ["c1", "c2", "c3"]
+
+        await session.close(pool)
+    finally:
+        await pool.stop()
+
+
+@pytest.mark.asyncio
+async def test_session_interactive_stdin(tmp_path: Path):
+    nb_path = tmp_path / "test_stdin.py"
+    nb = Notebook(cells=[
+        Cell("c1", "x = int(input('Enter a number: '))\nfor i in range(1, x + 1):\n    print(i)"),
+    ])
+    save_file(nb, nb_path)
+
+    pool = KernelPool(warm_size=1, default_cwd=tmp_path)
+    await pool.start()
+
+    try:
+        session = await NotebookSession.open(nb_path, pool)
+        from kikyo.api.protocol import RunCell, InputReply
+        import json
+        import asyncio
+
+        received_events: list[dict] = []
+        got_input_request = asyncio.Event()
+
+        class MockWS:
+            async def send_bytes(self, data: bytes):
+                pass
+
+            async def send_text(self, data: str):
+                try:
+                    parsed = json.loads(data)
+                    received_events.append(parsed)
+                    if parsed.get("op") == "event" and parsed.get("kind") == "input_request":
+                        got_input_request.set()
+                except Exception:
+                    pass
+
+        mock_ws = MockWS()
+        await session.add_client(mock_ws)
+
+        # Launch execution of cell c1
+        run_task = asyncio.create_task(session.handle_control(RunCell(cell_id="c1")))
+
+        # Wait for input_request event
+        await asyncio.wait_for(got_input_request.wait(), timeout=10.0)
+        assert any(
+            e.get("kind") == "input_request" and e.get("data", {}).get("prompt") == "Enter a number: "
+            for e in received_events
+        )
+
+        # Reply with "3"
+        await session.handle_control(InputReply(value="3", cell_id="c1"))
+
+        # Wait for cell execution to finish
+        await session.wait_idle()
+
+        # Verify sidecar outputs
+        outputs = session.sidecar.get_outputs("c1")
+        all_text = "".join(o["data"].get("text", "") for o in outputs if o.get("kind") == "stream")
+        assert "Enter a number: 3" in all_text
+        assert "1\n2\n3" in all_text
 
         await session.close(pool)
     finally:

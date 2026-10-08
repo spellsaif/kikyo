@@ -26,6 +26,7 @@ from .protocol import (
     CycleWarning,
     DeleteCell,
     GraphUpdate,
+    InputReply,
     InsertCell,
     Interrupt,
     RestartKernel,
@@ -54,6 +55,8 @@ class NotebookSession:
     last_disconnected_at: float | None = None
     _lock: asyncio.Lock = field(default_factory=asyncio.Lock)
     _exec_lock: asyncio.Lock = field(default_factory=asyncio.Lock)
+    _pending_input: dict[str, Any] | None = None
+    _active_tasks: set[asyncio.Task] = field(default_factory=set)
 
     @classmethod
     async def open(cls, path: Path, pool: KernelPool) -> NotebookSession:
@@ -78,11 +81,20 @@ class NotebookSession:
 
     async def close(self, pool: KernelPool) -> None:
         """Explicitly shut down session and release kernel process."""
+        for t in list(self._active_tasks):
+            t.cancel()
         if self.bridge:
             await self.bridge.stop()
         if self.kernel_id:
             await pool.release(self.kernel_id)
         log.info("Session closed for %s", self.path.name)
+
+    async def wait_idle(self) -> None:
+        """Wait until all current pipeline executions finish."""
+        while self._active_tasks:
+            await asyncio.gather(*list(self._active_tasks), return_exceptions=True)
+        async with self._exec_lock:
+            pass
 
     async def add_client(self, ws: WebSocket) -> None:
         self.clients.add(ws)
@@ -125,18 +137,46 @@ class NotebookSession:
             case CompleteRequest(cell_id=cid, code=code, cursor_pos=pos):
                 await self._complete(cid, code, pos, ws)
             case RunCell(cell_id=cid):
-                await self._run_pipeline([cid])
+                task = asyncio.create_task(self._run_pipeline([cid]))
+                self._active_tasks.add(task)
+                task.add_done_callback(self._active_tasks.discard)
+                return task
             case RunReactive(cell_id=cid):
                 try:
                     plan = topological_run_plan(self.graph, cid)
-                    await self._run_pipeline(plan)
+                    task = asyncio.create_task(self._run_pipeline(plan))
+                    self._active_tasks.add(task)
+                    task.add_done_callback(self._active_tasks.discard)
+                    return task
                 except CycleError as e:
                     warn = CycleWarning(cycle_cells=e.cycle_nodes, message=str(e))
                     await self._broadcast(encode(warn))
+                    return None
+            case InputReply(value=val, cell_id=reply_cid):
+                if self.bridge:
+                    self.bridge.send_input(val)
+                    pending = self._pending_input
+                    self._pending_input = None
+                    target_cid = reply_cid or (pending.get("cell_id") if pending else "")
+                    prompt = pending.get("prompt", "") if pending else ""
+                    is_password = pending.get("password", False) if pending else False
+
+                    echo_text = f"{prompt}\n" if is_password else f"{prompt}{val}\n"
+                    if target_cid:
+                        self.sidecar.append(target_cid, "stream", {"name": "stdout", "text": echo_text})
+                        stream_evt = KernelOutEvent(
+                            cell_id=target_cid,
+                            kind="stream",
+                            data={"name": "stdout", "text": echo_text},
+                        )
+                        await self._broadcast(encode(stream_evt))
+                return None
             case Interrupt():
+                self._pending_input = None
                 if self.bridge and self.bridge.kernel:
                     await self.bridge.kernel.interrupt()
             case RestartKernel():
+                self._pending_input = None
                 if self.bridge and self.bridge.kernel:
                     await self.bridge.kernel.restart()
                     restarted_evt = KernelOutEvent(
@@ -312,14 +352,27 @@ class NotebookSession:
 
                 # Event handler to stream output to clients and append to .kout
                 async def on_event(evt: KernelEvent) -> None:
+                    if evt.msg_type == "input_request":
+                        self._pending_input = {
+                            "cell_id": cid,
+                            "prompt": evt.content.get("prompt", ""),
+                            "password": evt.content.get("password", False),
+                        }
+                        out = KernelOutEvent(cell_id=cid, kind="input_request", data=evt.content)
+                        await self._broadcast(encode(out))
+                        return
+
                     if evt.msg_type != "status":
                         self.sidecar.append(cid, evt.msg_type, evt.content)
                     out = KernelOutEvent(cell_id=cid, kind=evt.msg_type, data=evt.content)
                     await self._broadcast(encode(out))
 
                 t_start = time.time()
-                # Execute sequentially and gate completion
-                success = await self.bridge.execute_and_wait(cell.source, on_event=on_event)
+                try:
+                    # Execute sequentially and gate completion
+                    success = await self.bridge.execute_and_wait(cell.source, on_event=on_event)
+                finally:
+                    self._pending_input = None
                 duration = round(time.time() - t_start, 3)
 
                 # Emit status idle with execution duration
