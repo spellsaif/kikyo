@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --canvas: #ffffff;
+  --surface: #f7f6f3;
+  --surface-raised: #ffffff;
+  --surface-hover: #efeeeb;
+  --border: rgba(55, 53, 47, 0.12);
+  --border-strong: rgba(55, 53, 47, 0.2);
+  --border-focus: rgba(55, 53, 47, 0.45);
+
+  --text-primary: #37352f;
+  --text-muted: #787774;
+  --text-faint: #9b9a97;
+
+  --accent: #2383e2;
+  --accent-tint: rgba(35, 131, 226, 0.08);
+
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+.dark,
+[data-theme="dark"] {
+  --canvas: #191919;
+  --surface: #202020;
+  --surface-raised: #262626;
+  --surface-hover: #2c2c2c;
+  --border: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.22);
+  --border-focus: rgba(255, 255, 255, 0.45);
+
+  --text-primary: rgba(255, 255, 255, 0.92);
+  --text-muted: rgba(255, 255, 255, 0.58);
+  --text-faint: rgba(255, 255, 255, 0.35);
+
+  --accent: #529cca;
+  --accent-tint: rgba(82, 156, 202, 0.12);
+}
+
+html {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--canvas);
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Custom scrollbars */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(140, 140, 140, 0.28);
+  border-radius: 9999px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(140, 140, 140, 0.45);
+}
+
+/* CodeMirror Editor Styling */
+.cm-notion-frame {
+  font-family: var(--font-mono);
+}
+
+.cm-editor {
+  background-color: transparent !important;
+  font-family: var(--font-mono) !important;
+  font-size: 13px !important;
+}
+
+.cm-scroller {
+  line-height: 1.55 !important;
+  padding: 4px 0 !important;
+}
+
+.cm-gutters {
+  background-color: transparent !important;
+  border-right: 1px solid var(--border) !important;
+  color: var(--text-faint) !important;
+  font-size: 11px !important;
+}
+
+.cm-focused {
+  outline: none !important;
+}
+
+.cm-line {
+  padding-left: 10px !important;
+}
+
+/* Notion Prose Markdown Typography */
+.notion-prose {
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.notion-prose h1,
+.notion-prose h2,
+.notion-prose h3,
+.notion-prose h4 {
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 0.8rem;
+  margin-bottom: 0.4rem;
+  color: var(--text-primary);
+}
+
+.notion-prose h1 { font-size: 1.45rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
+.notion-prose h2 { font-size: 1.25rem; }
+.notion-prose h3 { font-size: 1.05rem; }
+
+.notion-prose p {
+  margin-bottom: 0.5rem;
+}
+
+.notion-prose ul,
+.notion-prose ol {
+  padding-left: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.notion-prose li {
+  margin-bottom: 0.15rem;
+}
+
+.notion-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  background: rgba(150, 150, 150, 0.12);
+  padding: 2px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+
+.notion-prose pre {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 0.65rem 0.85rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin-bottom: 0.6rem;
+}
+
+.notion-prose pre code {
+  border: none;
+  padding: 0;
+  background: transparent;
+}
+
+.notion-prose blockquote {
+  border-left: 3px solid var(--border-strong);
+  padding-left: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  font-style: italic;
+}
+
+.notion-prose table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 0.6rem;
+}
+
+.notion-prose th,
+.notion-prose td {
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  text-align: left;
+}
+
+.notion-prose th {
+  background: var(--surface);
+  font-weight: 600;
+}
+
+/* HTML Output Table Styling */
+.notion-html-output table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 12px;
+}
+
+.notion-html-output th,
+.notion-html-output td {
+  border: 1px solid var(--border);
+  padding: 5px 10px;
+  text-align: left;
+}
+
+.notion-html-output th {
+  background-color: var(--surface);
+  color: var(--text-muted);
+  font-weight: 600;
+}
