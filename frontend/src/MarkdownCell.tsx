@@ -97,12 +97,12 @@ export function MarkdownCell({ id, ws, dragHandleProps }: MarkdownCellProps) {
 
   return (
     <div
-      className={`group/block relative my-3 overflow-hidden rounded-lg border border-l-4 transition-all ${
+      className={`group/block relative my-3 overflow-hidden rounded-lg border transition-all ${
         isActive
           ? isEditing || mode === "edit"
-            ? "border-neutral-300 border-l-emerald-500 shadow-md ring-1 ring-emerald-500/30 dark:border-neutral-750 dark:border-l-emerald-500"
-            : "border-neutral-300 border-l-blue-500 shadow-md ring-1 ring-blue-500/30 dark:border-neutral-750 dark:border-l-blue-500"
-          : "border-neutral-200/90 border-l-transparent hover:border-neutral-300 dark:border-neutral-800/90 dark:hover:border-neutral-700"
+            ? "border-emerald-500 shadow-md ring-2 ring-emerald-500/20 dark:border-emerald-500 dark:ring-emerald-500/30"
+            : "border-blue-500 shadow-md ring-2 ring-blue-500/20 dark:border-blue-500 dark:ring-blue-500/30"
+          : "border-neutral-200 hover:border-neutral-300 dark:border-neutral-800 dark:hover:border-neutral-700 shadow-xs"
       } bg-white dark:bg-[#1c1c1c]`}
       onClick={() => setActiveCellId(id)}
       onDoubleClick={() => {
