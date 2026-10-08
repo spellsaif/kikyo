@@ -1,10 +1,14 @@
+<p align="center">
+  <img src="assets/kikyo-logo.svg" width="160" alt="Kikyo Logo" />
+</p>
+
 # Kikyo (桔梗)
 
 > **A reactive, git-friendly Python notebook that stores code as clean `.py` scripts and eliminates out-of-order execution bugs.**
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%20%7C%203.13-blue.svg)](https://www.python.org/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![Tests: 22 passed](https://img.shields.io/badge/tests-22%20passed-success.svg)]()
+[![Tests: 26 passed](https://img.shields.io/badge/tests-26%20passed-success.svg)]()
 
 ---
 
@@ -16,10 +20,10 @@ Traditional notebooks suffer from two fundamental design flaws:
 2. **Git Merge Conflicts**: Standard Jupyter notebooks store code, stdout, execution counts, base64 images, and metadata in a single monolithic `.ipynb` JSON file. A 1-line code change routinely produces a 2,000-line git diff and merge conflicts.
 
 **Kikyo takes a different approach:**
-- **Code as Pure Python**: Every notebook is a plain Python file (`analysis.py`) with standard `# %%` block comments. You can open it in Neovim or VS Code, run it with `python analysis.py`, and inspect clean 1-line git diffs.
-- **Sidecar Output Storage**: Execution outputs and plots stream into an append-only companion file (`analysis.kout`), keeping your repository git history free of multi-megabyte base64 plots.
+- **Code as Pure Python**: Every notebook is a plain Python file (`experiment.py`) with standard `# %%` block comments. You can open it in Neovim or VS Code, run it with `python experiment.py`, and inspect clean 1-line git diffs.
+- **Sidecar Output Storage**: Execution outputs and plots stream into an append-only companion file (`experiment.kout`), keeping your repository git history free of multi-megabyte base64 plots.
 - **Reactive Dependency Flow**: Kikyo parses the Abstract Syntax Tree (AST) of each block to identify global definitions, reads, and in-place mutations. Running a cell automatically re-executes all downstream dependent cells in topological DAG order.
-- **Anti-AI-Slop Minimalism**: A serene, Notion-inspired document canvas. No cluttered menus, no artificial widgets—just your code, your markdown, drag-and-drop block ordering, and instant feedback.
+- **Anti-AI-Slop Minimalism**: A serene, Notion-inspired document canvas with default full-width layout. No cluttered menus, no artificial widgets—just your code, your markdown, drag-and-drop block ordering, and instant feedback.
 
 ---
 
@@ -29,10 +33,10 @@ Traditional notebooks suffer from two fundamental design flaws:
 
 ```bash
 # Using uv (recommended)
-uv tool install kikyo
+uv tool install kikyo-notebook
 
 # Or using pip
-pip install kikyo
+pip install kikyo-notebook
 ```
 
 ### Launching
@@ -76,11 +80,11 @@ Kikyo gives you complete control over execution semantics via a toggle in the to
 
 ```
 my_project/
-├── analysis.py       # Pure Python script with # %% cell markers (Version controlled)
-└── analysis.kout     # Append-only JSONL execution output sidecar (Gitignored)
+├── experiment.py       # Pure Python script with # %% cell markers (Version controlled)
+└── experiment.kout     # Append-only JSONL execution output sidecar (Gitignored)
 ```
 
-`analysis.py` contains valid Python code:
+`experiment.py` contains valid Python code:
 
 ```python
 # kikyo:notebook v=1
@@ -97,11 +101,85 @@ df = pd.DataFrame(data, columns=["x", "y"])
 print(df.describe())
 ```
 
-If you ever decide to stop using Kikyo, you are not locked into any proprietary format. Your notebooks are already standard Python scripts that run out of the box with `python analysis.py`.
+If you ever decide to stop using Kikyo, you are not locked into any proprietary format. Your notebooks are already standard Python scripts that run out of the box with `python experiment.py`.
 
 ### 3. Persistent Daemon Kernels
 
 Kernels run as decoupled background processes managed over ZeroMQ. If you refresh your browser, close the tab, or experience a temporary network disconnect, your long-running training loop or data download will **not** be killed. When you reopen the page, the WebSocket client reconnects and streams the latest state.
+
+### 4. Real-time Multiplayer Collaboration
+
+Kikyo includes conflict-free multi-user synchronization out of the box using [pycrdt](https://github.com/jupyter-server/pycrdt) (Yjs CRDTs) and WebSocket message broadcasting:
+- **Zero-config collaboration**: Run `kikyo start --host 0.0.0.0 --port 8765` on your workstation, local network, VPN, or cloud VM.
+- Anyone opening the shared URL (`http://<ip-or-host>:8765`) connects to the exact same notebook session.
+- Code typing, block reordering, and additions synchronize live across all browser windows.
+- Execution outputs, kernel state, and reactive graph updates stream simultaneously to all peers.
+
+---
+
+## Complete User Guide & Everyday Workflow
+
+Here is how you use Kikyo for data exploration, ML prototyping, and collaborative development:
+
+### 1. Creating and Managing Notebooks
+- **Start Kikyo**: Run `kikyo start` in your project folder and open `http://127.0.0.1:8765`.
+- **Create a new notebook**: Click the **+ New** button in the top left breadcrumb, or run `kikyo new experiment` from your terminal.
+- **Switch between notebooks**: Use the top breadcrumb dropdown selector or press <kbd>Ctrl+K</kbd> to open the Command Palette.
+- **Rename inline**: Click directly on the notebook title at the top of the canvas, type the new name, and press <kbd>Enter</kbd>.
+
+### 2. Working with Cells
+- **Two Navigation Modes**:
+  - **Command Mode** (Blue accent): Navigate cells with <kbd>J</kbd>/<kbd>K</kbd> or <kbd>↑</kbd>/<kbd>↓</kbd>. Create new cells with <kbd>A</kbd> (above) or <kbd>B</kbd> (below). Delete with <kbd>D, D</kbd>.
+  - **Edit Mode** (Green accent): Press <kbd>Enter</kbd> (or click inside code) to edit. Press <kbd>Esc</kbd> to return to Command Mode.
+- **Cell Types**:
+  - Press <kbd>Y</kbd> to convert a cell to Python Code.
+  - Press <kbd>M</kbd> to convert a cell to Markdown. Markdown cells render formatted prose, headers, lists, and math.
+- **Running Code**:
+  - <kbd>Shift + Enter</kbd>: Runs the active cell and advances focus to the next block (or creates a new code block at the bottom).
+  - <kbd>Ctrl + Enter</kbd>: Runs the active cell in-place.
+  - **Stop Button**: If code is stuck in a long calculation, click the red **Stop** button in the header (or press <kbd>I, I</kbd> in Command Mode) to interrupt execution without losing runtime memory.
+
+### 3. Understanding Cell Indicators & Guardrails
+- **`def: [symbol1, symbol2]` (Green badge)**: Indicates the top-level variables, functions, or classes this block exports to the notebook namespace.
+- **`→ N deps` (Sky-blue badge)**: Shows how many downstream cells depend on variables defined in this block.
+- **`dup: [symbol]` (Amber warning)**: Alerts you when two separate cells define the same variable name, preventing accidental namespace collisions.
+
+### 4. When to Use Classic Mode vs. Reactive Mode
+- **Reactive Flow (Default)**: Best for exploratory analysis, feature engineering, and reports. Editing an upstream variable (e.g., changing `sample_size = 500`) automatically triggers downstream cells in topological DAG order.
+- **Classic Mode (Opt-in single-cell)**: Best for heavy ML training, large dataset downloads, or slow API calls. Click the **⚡ Reactive** toggle in the header or use <kbd>Ctrl+K</kbd> to switch to Classic mode, so executing an upstream cell updates state without auto-running heavy downstream cells.
+
+### 5. Inspecting the Reactive Graph & Variables
+- Press <kbd>Ctrl+G</kbd> or click **Graph** in the top bar to open the slide-out **Reactive Graph & Variable Inspector Drawer**.
+- Displays the complete DAG dependency tree, symbol definitions, and detects circular dependency cycles.
+
+### 6. Drag & Drop Reordering
+- Grab the drag handle (<kbd>⋮⋮</kbd>) on the left of any cell to drag and reorder blocks effortlessly.
+- Or use keyboard shortcuts: <kbd>Alt + ↑</kbd> to move up, <kbd>Alt + ↓</kbd> to move down.
+- Reordering instantly updates the underlying `.py` file and recalculates the reactive DAG.
+
+### 7. Git & Production Best Practices
+Each notebook consists of:
+- `notebooks/experiment.py`: Pure Python code with `# %%` cell markers. **Commit this file to git.**
+- `notebooks/experiment.kout`: Append-only JSONL sidecar containing execution logs and images. **Add `*.kout` to `.gitignore`.**
+
+```gitignore
+# .gitignore
+*.kout
+```
+- **Run headlessly**: Any Kikyo notebook can be run directly from terminal or CI/CD:
+  ```bash
+  python notebooks/experiment.py
+  ```
+
+### 8. Importing & Exporting Jupyter Notebooks
+- **Import existing notebooks**:
+  ```bash
+  kikyo convert my_existing.ipynb --output-dir notebooks/
+  ```
+- **Export to Jupyter**:
+  ```bash
+  kikyo export notebooks/experiment.py --output-file experiment.ipynb
+  ```
 
 ---
 
@@ -111,6 +189,7 @@ Kikyo adopts the proven two-mode workflow of classic Jupyter with modern Notion-
 
 - **Edit Mode** (Green accent bar): Cursor is inside the editor. Type code or markdown directly.
 - **Command Mode** (Blue accent bar): Cell is selected. Navigate and organize notebook structure using single-key shortcuts.
+- **Full-Width Canvas**: Generous full-width document canvas by default (toggleable via the `...` menu or Command Palette).
 
 ### Keyboard Shortcuts
 
@@ -139,17 +218,16 @@ Kikyo adopts the proven two-mode workflow of classic Jupyter with modern Notion-
 
 ```bash
 # Start the web server
-kikyo start [--host 127.0.0.1] [--port 8765] [--notebooks-dir ./notebooks]
+kikyo start [--host 127.0.0.1] [--port 8765] [--notebook-dir ./notebooks]
 
 # Create a new empty notebook
-kikyo new <notebook_name>
+kikyo new <notebook_name> [--notebook-dir ./notebooks]
 
-# Export notebook to standard Jupyter .ipynb or pure .py
-kikyo export <notebook_name> --format ipynb --output my_notebook.ipynb
-kikyo export <notebook_name> --format py --output script.py
+# Export a Kikyo notebook to standard Jupyter .ipynb
+kikyo export notebooks/experiment.py [--output-file experiment.ipynb]
 
-# Convert an existing Jupyter .ipynb to Kikyo format
-kikyo convert my_notebook.ipynb --output notebooks/
+# Convert an existing Jupyter .ipynb into a Kikyo .py + .kout pair
+kikyo convert my_notebook.ipynb [--output-dir ./notebooks]
 ```
 
 ---
@@ -195,12 +273,12 @@ kikyo/
 │   │   ├── graph.py         # ReactiveGraph DAG representation
 │   │   └── pipeline.py      # Tarjan cycle detection and topological run planning
 │   ├── storage/             # File serialization & converters
-│   │   ├── format.py        # Pure Python `# %%` loader and serializer
+│   │   ├── format.py        # Pure Python `# %%` loader, serializer & .ipynb converter
 │   │   ├── sidecar.py       # Append-only `.kout` JSONL execution output log
-│   │   └── ipynb.py         # Bidirectional Jupyter .ipynb converter
+│   │   └── db.py            # SQLite state database
 │   ├── collab/              # Real-time multiplayer synchronization
-│   │   └── protocol.py      # pycrdt (Y-py) document bindings
-│   └── cli/                 # Click CLI commands (start, new, export, convert)
+│   │   └── protocol.py      # pycrdt (Yjs CRDT) document bindings
+│   └── cli/                 # Typer CLI commands (start, new, export, convert)
 │
 ├── frontend/                # Single-page application
 │   ├── src/
@@ -215,7 +293,7 @@ kikyo/
 │   │   └── ws.ts            # WebSocket client handler
 │   └── package.json
 │
-└── tests/                   # Integration and unit tests (22 test suites)
+└── tests/                   # Integration and unit tests (25 passing tests)
     ├── integration/
     └── unit/
 ```
