@@ -11,7 +11,7 @@ from typing import Any
 HEADER = "# kikyo:notebook v=1"
 LEGACY_HEADER = "# jasmine:notebook v=1"
 CELL_RE = re.compile(
-    r"^# (?:kikyo|jasmine):cell id=(?P<id>[A-Za-z0-9_\-]+)(?:\s+type=(?P<type>[a-z]+))?\s*$"
+    r"^# (?:kikyo|jasmine):cell id=(?P<id>[A-Za-z0-9_\-]+)(?:\s+(?:cell_)?type=(?P<type>[a-z]+))?\s*$"
 )
 
 
@@ -40,9 +40,11 @@ def _clean_markdown_source(raw: str) -> str:
     """Unwraps triple-quoted string docstrings if present."""
     text = raw.strip()
     if text.startswith('"""') and text.endswith('"""') and len(text) >= 6:
-        return text[3:-3].strip("\n")
+        inner = text[3:-3].strip("\n")
+        return inner.replace(r'\"\"\"', '"""')
     if text.startswith("'''") and text.endswith("'''") and len(text) >= 6:
-        return text[3:-3].strip("\n")
+        inner = text[3:-3].strip("\n")
+        return inner.replace(r"\'\'\'", "'''")
     return text
 
 
@@ -85,7 +87,14 @@ def dumps(nb: Notebook) -> str:
     for cell in nb.cells:
         if cell.cell_type == "markdown":
             parts.append(f"# kikyo:cell id={cell.id} type=markdown")
-            parts.append(f'"""\n{cell.source.strip()}\n"""\n')
+            src = cell.source.strip()
+            if '"""' not in src:
+                parts.append(f'"""\n{src}\n"""\n')
+            elif "'''" not in src:
+                parts.append(f"'''\n{src}\n'''\n")
+            else:
+                escaped = src.replace('"""', r'\"\"\"')
+                parts.append(f'"""\n{escaped}\n"""\n')
         else:
             parts.append(f"# kikyo:cell id={cell.id}")
             parts.append(cell.source.rstrip("\n") + "\n")

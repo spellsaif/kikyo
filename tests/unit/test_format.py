@@ -62,3 +62,29 @@ def test_markdown_ipynb_conversion():
     assert nb_back.cells[0].cell_type == "markdown"
     assert nb_back.cells[0].source == "### Heading"
 
+
+def test_markdown_with_triple_quotes_roundtrip():
+    # Markdown containing Python docstrings or triple quotes should not corrupt format
+    content = 'Here is a docstring example:\n"""Hello World"""'
+    nb = Notebook(cells=[Cell("c1", content, cell_type="markdown")])
+    dumped = dumps(nb)
+    loaded = loads(dumped)
+    assert loaded.cells[0].source == content
+
+
+def test_cell_type_syntax_support():
+    # Support both type=markdown and cell_type=markdown
+    text = (
+        "# kikyo:notebook v=1\n"
+        "# kikyo:cell id=c1 cell_type=markdown\n"
+        "'''\n# Doc\n'''\n"
+        "# kikyo:cell id=c2\n"
+        "x = 1\n"
+    )
+    loaded = loads(text)
+    assert len(loaded.cells) == 2
+    assert loaded.cells[0].cell_type == "markdown"
+    assert loaded.cells[0].source == "# Doc"
+    assert loaded.cells[1].cell_type == "code"
+
+
