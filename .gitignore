@@ -11,6 +11,7 @@ htmlcov/
 .coverage
 dist/
 build/
+*.log
 
 # Kikyo-specific outputs and runtime data
 *.kout
