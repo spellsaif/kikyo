@@ -23,6 +23,7 @@ import {
   Zap,
   MoreHorizontal,
   BookOpen,
+  GripVertical,
 } from "lucide-react";
 import {
   DndContext,
@@ -31,7 +32,11 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  pointerWithin,
+  DragOverlay,
   type DragEndEvent,
+  type DragStartEvent,
+  type CollisionDetection,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -47,6 +52,53 @@ import { useKikyoStore } from "./store";
 import { CommandPalette } from "./CommandPalette";
 import { ReactiveDrawer } from "./ReactiveDrawer";
 import { HomeDocs } from "./HomeDocs";
+
+/**
+ * High-performance collision detection for single-column notebook blocks:
+ * 1. Checks direct pointer containment
+ * 2. Checks vertical (Y-axis) row intersection, ensuring tall/large cells are effortlessly
+ *    dragged over and swapped without requiring extreme center-point Euclidean crossing
+ * 3. Falls back to closestCenter for edge cases
+ */
+const customCollisionDetection: CollisionDetection = (args) => {
+  // 1. Direct pointer collision check
+  const directPointerCollisions = pointerWithin(args);
+  if (directPointerCollisions.length > 0) {
+    return directPointerCollisions;
+  }
+
+  // 2. Vertical slice check (Y-axis proximity for single-column notebook)
+  const { droppableContainers, droppableRects, pointerCoordinates } = args;
+  if (pointerCoordinates && droppableRects) {
+    const py = pointerCoordinates.y;
+    let closestContainer: (typeof droppableContainers)[number] | null = null;
+    let minDistance = Infinity;
+
+    for (const container of droppableContainers) {
+      const rect = droppableRects.get(container.id);
+      if (!rect) continue;
+
+      // Pointer is within the vertical bounds of this row
+      if (py >= rect.top && py <= rect.bottom) {
+        return [{ id: container.id, data: { droppableContainer: container, value: 0 } }];
+      }
+
+      // Distance to this container vertically
+      const dist = py < rect.top ? rect.top - py : py - rect.bottom;
+      if (dist < minDistance) {
+        minDistance = dist;
+        closestContainer = container;
+      }
+    }
+
+    if (closestContainer) {
+      return [{ id: closestContainer.id, data: { droppableContainer: closestContainer, value: minDistance } }];
+    }
+  }
+
+  // 3. Fallback
+  return closestCenter(args);
+};
 
 function SortableCellItem({
   cell,
@@ -66,9 +118,9 @@ function SortableCellItem({
 
   const style: React.CSSProperties = {
     transform: CSS.Translate.toString(transform),
-    transition,
+    transition: isDragging ? undefined : transition,
     zIndex: isDragging ? 40 : undefined,
-    opacity: isDragging ? 0.6 : 1,
+    opacity: isDragging ? 0.35 : 1,
   };
 
   return (
@@ -210,7 +262,15 @@ export default function App() {
     })
   );
 
+  const [activeDragId, setActiveDragId] = useState<string | null>(null);
+  const activeDragCell = activeDragId ? cells.find((c) => c.id === activeDragId) : null;
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveDragId(event.active.id as string);
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
+    setActiveDragId(null);
     const { active, over } = event;
     if (over && active.id !== over.id) {
       const oldIndex = cells.findIndex((c) => c.id === active.id);
@@ -223,6 +283,10 @@ export default function App() {
         }
       }
     }
+  };
+
+  const handleDragCancel = () => {
+    setActiveDragId(null);
   };
 
   // Global Jupyter Command Mode & Edit Mode Navigation
@@ -1013,8 +1077,10 @@ export default function App() {
           ) : (
             <DndContext
               sensors={sensors}
-              collisionDetection={closestCenter}
+              collisionDetection={customCollisionDetection}
+              onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
+              onDragCancel={handleDragCancel}
             >
               <SortableContext
                 items={cells.map((c) => c.id)}
@@ -1045,6 +1111,25 @@ export default function App() {
                   </div>
                 </div>
               </SortableContext>
+
+              <DragOverlay adjustScale={false}>
+                {activeDragCell ? (
+                  <div className="flex max-h-24 w-full cursor-grabbing items-center justify-between rounded-xl border-2 border-blue-500 bg-white/95 px-4 py-3 shadow-2xl backdrop-blur-sm dark:bg-[#1a1a1a]/95 dark:border-blue-400">
+                    <div className="flex items-center gap-2.5 overflow-hidden">
+                      <GripVertical size={16} className="text-blue-500 shrink-0" />
+                      <span className="rounded bg-neutral-200/80 px-2 py-0.5 font-mono text-[10px] font-semibold text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 shrink-0">
+                        [{activeDragCell.id}] {activeDragCell.cell_type === "markdown" ? "Text" : "Code"}
+                      </span>
+                      <span className="truncate font-mono text-xs text-neutral-600 dark:text-neutral-300">
+                        {activeDragCell.source.trim().split("\n")[0] || "(empty block)"}
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-medium text-blue-600 dark:text-blue-400 shrink-0 ml-3">
+                      Moving block
+                    </span>
+                  </div>
+                ) : null}
+              </DragOverlay>
             </DndContext>
           )}
         </main>

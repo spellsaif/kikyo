@@ -422,7 +422,7 @@ export function Cell({
 
         {/* Outputs Container */}
         {cell.outputs && cell.outputs.length > 0 && (
-          <div className="flex flex-col gap-2 border-t border-neutral-100 bg-[#fafafa] p-3 dark:border-neutral-800/60 dark:bg-[#151515]">
+          <div className="flex flex-col gap-2 border-t border-neutral-100 bg-[#fafafa] p-3 dark:border-neutral-800/60 dark:bg-[#151515] max-h-[420px] overflow-y-auto scrollbar-thin">
             {cell.outputs.map((out, idx) => (
               <Output key={idx} output={out} />
             ))}
