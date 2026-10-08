@@ -1,8 +1,8 @@
-import { useMemo } from "react";
+import { useMemo, useRef, useEffect } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
 import { oneDark } from "@codemirror/theme-one-dark";
-import { keymap } from "@codemirror/view";
+import { keymap, EditorView } from "@codemirror/view";
 import { Prec } from "@codemirror/state";
 import { autocompletion, CompletionContext } from "@codemirror/autocomplete";
 import { Play, Trash2, Plus, Loader2, FileText, Eraser, ArrowUp, ArrowDown, GripVertical } from "lucide-react";
@@ -83,6 +83,16 @@ export function Cell({
   const cellMetadata = graphInfo.cell_info?.[id];
   const defines = cellMetadata?.defines || [];
   const dependents = graphInfo.dependents?.[id] || [];
+
+  const viewRef = useRef<EditorView | null>(null);
+
+  useEffect(() => {
+    if (isActive && mode === "edit" && viewRef.current) {
+      if (!viewRef.current.hasFocus) {
+        viewRef.current.focus();
+      }
+    }
+  }, [isActive, mode]);
 
   const runCell = () => {
     if (ws && cell.status !== "running") {
@@ -252,7 +262,7 @@ export function Cell({
                     : "bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300"
                 }`}
               >
-                {mode === "edit" ? "✎ Editing" : "⌨ Selected"}
+                {mode === "edit" ? "Editing" : "Selected"}
               </span>
             )}
 
@@ -385,6 +395,9 @@ export function Cell({
         {/* Code Editor */}
         <div className="cm-notion-frame text-[13px]">
           <CodeMirror
+            onCreateEditor={(view) => {
+              viewRef.current = view;
+            }}
             value={cell.source}
             extensions={[python(), keyboardExtension, kikyoAutocomplete]}
             theme={theme === "dark" ? oneDark : "light"}

@@ -193,20 +193,38 @@ body {
 /* HTML Output Table Styling */
 .notion-html-output table {
   border-collapse: collapse;
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 11.5px;
+  color: var(--text-primary);
+  background-color: var(--canvas);
 }
 
 .notion-html-output th,
 .notion-html-output td {
-  border: 1px solid var(--border);
-  padding: 5px 10px;
+  border: 1px solid var(--border) !important;
+  padding: 5px 12px;
   text-align: left;
 }
 
 .notion-html-output th {
   background-color: var(--surface);
-  color: var(--text-muted);
+  color: var(--text-primary);
   font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.notion-html-output table tbody tr:hover {
+  background-color: var(--surface-hover);
+}
+
+.notion-html-output table tbody tr:nth-child(even) {
+  background-color: rgba(125, 125, 125, 0.04);
+}
+
+.notion-html-output table.dataframe {
+  font-variant-numeric: tabular-nums;
 }

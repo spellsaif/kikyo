@@ -200,6 +200,27 @@ export function Output({ output }: { output: OutputData }) {
       );
     }
 
+    if (bundle["image/jpeg"]) {
+      return (
+        <div className="inline-block overflow-hidden rounded border border-neutral-200 bg-white p-2 dark:border-neutral-800 dark:bg-neutral-900">
+          <img
+            src={`data:image/jpeg;base64,${bundle["image/jpeg"]}`}
+            alt="Plot Output"
+            className="max-h-[600px] w-auto max-w-full rounded object-contain"
+          />
+        </div>
+      );
+    }
+
+    if (bundle["image/svg+xml"]) {
+      return (
+        <div
+          className="inline-block overflow-hidden rounded border border-neutral-200 bg-white p-2 dark:border-neutral-800 dark:bg-neutral-900 max-w-full"
+          dangerouslySetInnerHTML={{ __html: bundle["image/svg+xml"] }}
+        />
+      );
+    }
+
     if (bundle["text/html"]) {
       return <HTMLOutput html={bundle["text/html"]} />;
     }

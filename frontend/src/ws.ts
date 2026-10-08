@@ -60,6 +60,11 @@ export class KikyoWSClient {
         const state = msg.data.execution_state;
         if (msg.data.restarted) {
           store.setKernelStatus("idle");
+          store.cells.forEach((c) => {
+            if (c.status === "running") {
+              store.setCellStatus(c.id, "idle");
+            }
+          });
         } else if (state === "busy") {
           store.setKernelStatus("busy");
           if (msg.cell_id) {
