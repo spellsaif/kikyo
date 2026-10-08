@@ -236,7 +236,7 @@ Contributions are welcome! Kikyo is built with clean Python 3.12+ type hints and
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/your-username/kikyo.git
+git clone https://github.com/spellsaif/kikyo.git
 cd kikyo
 
 # 2. Set up Python virtual environment and install dependencies
@@ -275,4 +275,4 @@ npm run dev
 
 ## License
 
-Kikyo is open-source software licensed under the [MIT License](LICENSE).
+Kikyo is open-source software licensed under the [Apache 2.0 License](LICENSE).
