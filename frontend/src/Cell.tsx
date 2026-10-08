@@ -5,7 +5,7 @@ import { oneDark } from "@codemirror/theme-one-dark";
 import { keymap, EditorView } from "@codemirror/view";
 import { Prec } from "@codemirror/state";
 import { autocompletion, CompletionContext } from "@codemirror/autocomplete";
-import { Play, Trash2, Plus, Loader2, FileText, Eraser, ArrowUp, ArrowDown, GripVertical } from "lucide-react";
+import { Play, Square, Trash2, Plus, FileText, Eraser, ArrowUp, ArrowDown, GripVertical } from "lucide-react";
 import { useKikyoStore } from "./store";
 import type { KikyoWSClient } from "./ws";
 import { Output } from "./Output";
@@ -235,19 +235,28 @@ export function Cell({
               </button>
             )}
 
-            <button
-              onClick={runCell}
-              disabled={cell.status === "running"}
-              className="flex items-center gap-1 rounded bg-neutral-100 px-2 py-0.5 font-medium text-neutral-800 transition-colors hover:bg-neutral-200/80 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 disabled:opacity-60"
-              title="Run cell (Shift+Enter to run & advance, Ctrl+Enter to run in-place)"
-            >
-              {cell.status === "running" ? (
-                <Loader2 size={12} className="animate-spin text-blue-500" />
-              ) : (
+            {cell.status === "running" ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (ws) ws.send({ op: "interrupt" });
+                }}
+                className="flex items-center gap-1 rounded bg-rose-50 px-2 py-0.5 font-medium text-rose-700 border border-rose-200 transition-colors hover:bg-rose-100 hover:border-rose-300 dark:bg-rose-950/60 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-900/80 cursor-pointer shadow-xs animate-pulse"
+                title="Stop execution (Interrupt Kernel)"
+              >
+                <Square size={10} className="fill-current text-rose-600 dark:text-rose-400" />
+                <span className="text-[11px] font-sans font-semibold">Stop</span>
+              </button>
+            ) : (
+              <button
+                onClick={runCell}
+                className="flex items-center gap-1 rounded bg-neutral-100 px-2 py-0.5 font-medium text-neutral-800 transition-colors hover:bg-neutral-200/80 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 cursor-pointer"
+                title="Run cell (Shift+Enter to run & advance, Ctrl+Enter to run in-place)"
+              >
                 <Play size={10} className="fill-current text-neutral-800 dark:text-neutral-200" />
-              )}
-              <span className="text-[11px] font-sans">Run</span>
-            </button>
+                <span className="text-[11px] font-sans">Run</span>
+              </button>
+            )}
 
             <span className="font-mono text-[10.5px] text-neutral-400 dark:text-neutral-500">
               [{id}]

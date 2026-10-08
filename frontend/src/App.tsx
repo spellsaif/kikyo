@@ -628,11 +628,11 @@ export default function App() {
         <div className="flex items-center gap-1.5 text-neutral-500 dark:text-neutral-400">
           <button
             onClick={() => setViewMode(viewMode === "home" && activeNb ? "notebook" : "home")}
-            className="flex items-center gap-1.5 font-semibold text-neutral-800 hover:text-blue-600 dark:text-neutral-100 dark:hover:text-blue-400 transition-colors mr-1"
+            className="flex items-center gap-2 font-semibold text-neutral-800 hover:text-blue-600 dark:text-neutral-100 dark:hover:text-blue-400 transition-colors mr-1 group"
             title="Toggle Kikyo Home & Documentation"
           >
-            <span className="text-sm">桔梗</span>
-            <span className="font-medium tracking-tight">Kikyo</span>
+            <img src="/favicon.svg" alt="Kikyo Logo" className="h-4.5 w-4.5 transition-transform group-hover:scale-110" />
+            <span className="font-semibold tracking-tight text-[13px]">Kikyo</span>
           </button>
           <span className="text-neutral-300 dark:text-neutral-700">/</span>
 
@@ -672,6 +672,18 @@ export default function App() {
 
         {/* Right: Actions and Controls */}
         <div className="flex items-center gap-1.5">
+          {/* Dedicated Stop Button when kernel is busy or any cell is running */}
+          {activeNb && viewMode === "notebook" && (kernelStatus === "busy" || cells.some((c) => c.status === "running")) && (
+            <button
+              onClick={() => ws?.send({ op: "interrupt" })}
+              className="flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-100 hover:border-rose-300 dark:border-rose-900/60 dark:bg-rose-950/60 dark:text-rose-300 dark:hover:bg-rose-900/80 transition-colors shadow-xs animate-pulse cursor-pointer"
+              title="Stop execution (Interrupt Python runtime - I, I)"
+            >
+              <Square size={10} className="fill-current text-rose-600 dark:text-rose-400" />
+              <span>Stop</span>
+            </button>
+          )}
+
           {/* Kernel Status Indicator */}
           {activeNb && viewMode === "notebook" && (
             <div
@@ -688,15 +700,6 @@ export default function App() {
                 }`}
               />
               <span className="hidden md:inline capitalize">{kernelStatus}</span>
-              {kernelStatus === "busy" && (
-                <button
-                  onClick={() => ws?.send({ op: "interrupt" })}
-                  className="rounded p-0.5 text-neutral-400 hover:bg-neutral-200 hover:text-rose-600 dark:hover:bg-neutral-700 dark:hover:text-rose-400"
-                  title="Interrupt Execution (Stop)"
-                >
-                  <Square size={9} className="fill-current" />
-                </button>
-              )}
             </div>
           )}
 
@@ -804,6 +807,13 @@ export default function App() {
                     >
                       <Play size={12} />
                       <span>Run all cells</span>
+                    </button>
+                    <button
+                      onClick={() => ws?.send({ op: "interrupt" })}
+                      className="flex w-full items-center gap-2 rounded px-2.5 py-1.5 hover:bg-rose-50 text-rose-600 dark:hover:bg-rose-950/40 dark:text-rose-400 text-left"
+                    >
+                      <Square size={12} className="fill-current text-rose-600 dark:text-rose-400" />
+                      <span>Stop execution (Interrupt)</span>
                     </button>
                     <button
                       onClick={() => ws?.send({ op: "restart_kernel" })}

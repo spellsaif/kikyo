@@ -31,8 +31,8 @@ export function HomeDocs({
     <div className="mx-auto max-w-4xl px-6 py-10 transition-colors animate-in fade-in duration-150">
       {/* Notion Cover Icon & Header */}
       <div className="mb-8 border-b border-neutral-200/80 pb-8 dark:border-neutral-800">
-        <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900 font-semibold text-base select-none shadow-xs">
-          K
+        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-neutral-100/90 p-2 dark:bg-neutral-800/80 border border-neutral-200/80 dark:border-neutral-700/80 shadow-xs">
+          <img src="/favicon.svg" alt="Kikyo Logo" className="h-full w-full object-contain" />
         </div>
         <div className="flex items-center gap-2 mb-2">
           <h1 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
