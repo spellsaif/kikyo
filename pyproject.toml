@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kikyo"
+version = "0.2.0"
+description = "A reactive, collaborative, git-friendly Python notebook."
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.11"
+authors = [{ name = "Kikyo Contributors" }]
+keywords = ["notebook", "jupyter", "reactive", "collaborative", "crdt", "git-friendly"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Framework :: FastAPI",
+    "License :: OSI Approved :: Apache Software License",
+]
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.30.0",
+    "websockets>=12.0",
+    "anyio>=4.4.0",
+    "msgspec>=0.18.6",
+    "jupyter-client>=8.6.0",
+    "ipykernel>=6.29.0",
+    "pycrdt>=0.14.0",
+    "pycrdt-websocket>=0.16.0",
+    "aiosqlite>=0.20.0",
+    "typer>=0.12.0",
+    "rich>=13.7.0",
+    "watchfiles>=0.22.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "httpx>=0.27",
+    "ruff>=0.5",
+    "mypy>=1.10",
+]
+
+[project.scripts]
+kikyo = "kikyo.cli.main:app"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+strict = false
+files = ["src/kikyo"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kikyo"]

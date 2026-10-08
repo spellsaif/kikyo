@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+dist/
+build/
+
+# Kikyo-specific outputs and runtime data
+*.kout
+*.jout
+.kikyo/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
