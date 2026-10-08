@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import ast
 import builtins
+import re
 from dataclasses import dataclass, field
 
 _PYTHON_BUILTINS = frozenset(dir(builtins))
@@ -210,10 +211,29 @@ class LexicalAnalyzer(ast.NodeVisitor):
         return curr.id if isinstance(curr, ast.Name) else None
 
 
+def _clean_ipython_source(source: str) -> str:
+    """Comment out IPython magics (%, %%), shell escapes (!), and help (?) so ast.parse succeeds."""
+    lines = source.splitlines(keepends=True)
+    out: list[str] = []
+    for line in lines:
+        stripped = line.lstrip()
+        if stripped.startswith(("%time ", "%timeit ")):
+            indent = line[: len(line) - len(stripped)]
+            after = re.sub(r"^%time(it)?\s+", "", stripped)
+            out.append(indent + after)
+        elif stripped.startswith(("%", "!", "?")):
+            indent = line[: len(line) - len(stripped)]
+            out.append(indent + "# [ipython] " + stripped)
+        else:
+            out.append(line)
+    return "".join(out)
+
+
 def analyze(source: str) -> CellAnalysis:
     """Analyze a code cell and extract defines, external reads, and in-place mutations."""
+    clean_src = _clean_ipython_source(source)
     try:
-        tree = ast.parse(source)
+        tree = ast.parse(clean_src)
     except SyntaxError as e:
         return CellAnalysis(frozenset(), frozenset(), frozenset(), False, str(e))
 

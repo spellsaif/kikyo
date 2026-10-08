@@ -51,3 +51,19 @@ def test_syntax_error():
     a = analyze("def broken(:")
     assert not a.syntax_ok
     assert a.error is not None
+
+
+def test_ipython_magics_and_shell_commands():
+    # IPython shell escapes and line magics should be ignored in AST without syntax errors
+    code = (
+        "!pip install pandas numpy\n"
+        "%matplotlib inline\n"
+        "%time x = 42\n"
+        "import numpy as np\n"
+        "data = np.array([x])\n"
+    )
+    a = analyze(code)
+    assert a.syntax_ok
+    assert a.defines == {"x", "np", "data"}
+    assert a.reads == set()
+
