@@ -17,6 +17,21 @@ app = typer.Typer(help="🪻 Kikyo — Reactive, collaborative, git-friendly Pyt
 console = Console()
 
 
+import socket
+
+def _find_available_port(host: str, start_port: int, max_attempts: int = 50) -> int:
+    """Find the next open port starting from start_port."""
+    for p in range(start_port, start_port + max_attempts):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            try:
+                s.bind((host, p))
+                return p
+            except OSError:
+                continue
+    return start_port
+
+
 @app.command()
 def start(
     host: str = "127.0.0.1",
@@ -26,13 +41,17 @@ def start(
 ):
     """Start the Kikyo notebook server."""
     notebook_dir.mkdir(parents=True, exist_ok=True)
-    console.print(f"[bold magenta]🪻 Kikyo[/] running at [link=http://{host}:{port}]http://{host}:{port}[/]")
+    target_port = _find_available_port(host, port)
+    if target_port != port:
+        console.print(f"[yellow]Port {port} is already in use.[/] Automatically selected port [cyan bold]{target_port}[/].\n")
+
+    console.print(f"[bold magenta]🪻 Kikyo[/] running at [link=http://{host}:{target_port}]http://{host}:{target_port}[/]")
     console.print(f"Notebooks directory: [cyan]{notebook_dir.resolve()}[/]\n")
 
     uvicorn.run(
         "kikyo.api.app:app",
         host=host,
-        port=port,
+        port=target_port,
         reload=reload,
         log_level="info",
     )
