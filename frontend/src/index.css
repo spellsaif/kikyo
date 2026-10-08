@@ -82,19 +82,19 @@ body {
 .cm-editor {
   background-color: transparent !important;
   font-family: var(--font-mono) !important;
-  font-size: 13px !important;
+  font-size: 14.5px !important;
 }
 
 .cm-scroller {
-  line-height: 1.55 !important;
-  padding: 4px 0 !important;
+  line-height: 1.6 !important;
+  padding: 6px 0 !important;
 }
 
 .cm-gutters {
   background-color: transparent !important;
   border-right: 1px solid var(--border) !important;
   color: var(--text-faint) !important;
-  font-size: 11px !important;
+  font-size: 12px !important;
 }
 
 .cm-focused {
@@ -122,9 +122,9 @@ body {
   color: var(--text-primary);
 }
 
-.notion-prose h1 { font-size: 1.45rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
-.notion-prose h2 { font-size: 1.25rem; }
-.notion-prose h3 { font-size: 1.05rem; }
+.notion-prose h1 { font-size: 1.65rem; border-bottom: 1px solid var(--border); padding-bottom: 0.35rem; }
+.notion-prose h2 { font-size: 1.35rem; }
+.notion-prose h3 { font-size: 1.15rem; }
 
 .notion-prose p {
   margin-bottom: 0.5rem;
@@ -142,7 +142,7 @@ body {
 
 .notion-prose code {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   background: rgba(150, 150, 150, 0.12);
   padding: 2px 5px;
   border-radius: 3px;
@@ -181,7 +181,7 @@ body {
 .notion-prose th,
 .notion-prose td {
   border: 1px solid var(--border);
-  padding: 6px 10px;
+  padding: 7px 12px;
   text-align: left;
 }
 
@@ -196,7 +196,7 @@ body {
   width: max-content;
   min-width: 100%;
   font-family: var(--font-sans);
-  font-size: 11.5px;
+  font-size: 13px;
   color: var(--text-primary);
   background-color: var(--canvas);
 }
@@ -204,7 +204,7 @@ body {
 .notion-html-output th,
 .notion-html-output td {
   border: 1px solid var(--border) !important;
-  padding: 5px 12px;
+  padding: 6px 14px;
   text-align: left;
 }
 

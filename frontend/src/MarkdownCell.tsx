@@ -111,8 +111,8 @@ export function MarkdownCell({ id, ws, dragHandleProps }: MarkdownCellProps) {
       }}
     >
       {/* Block Header Toolbar */}
-      <div className="flex items-center justify-between border-b border-neutral-100 bg-neutral-50/70 px-2.5 py-1 text-xs select-none dark:border-neutral-800/60 dark:bg-[#171717]">
-        <div className="flex items-center gap-1.5 flex-wrap">
+      <div className="flex items-center justify-between border-b border-neutral-100 bg-neutral-50/70 px-3 py-1.5 text-xs select-none dark:border-neutral-800/60 dark:bg-[#171717]">
+        <div className="flex items-center gap-2 flex-wrap">
           {dragHandleProps && (
             <button
               {...dragHandleProps.listeners}
@@ -120,18 +120,18 @@ export function MarkdownCell({ id, ws, dragHandleProps }: MarkdownCellProps) {
               className="cursor-grab active:cursor-grabbing rounded p-0.5 text-neutral-400 hover:bg-neutral-200/60 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-200 transition-colors"
               title="Drag to reorder block"
             >
-              <GripVertical size={13} />
+              <GripVertical size={14} />
             </button>
           )}
 
-          <span className="font-mono text-[10.5px] text-neutral-400 dark:text-neutral-500">
+          <span className="font-mono text-xs text-neutral-400 dark:text-neutral-500">
             [{id}]
           </span>
 
           {/* Active focus status badge */}
           {isActive && (
             <span
-              className={`rounded px-1.5 py-0.2 font-mono text-[10px] font-medium ${
+              className={`rounded px-2 py-0.5 font-mono text-[11px] font-medium ${
                 isEditing || mode === "edit"
                   ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
                   : "bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300"
@@ -141,7 +141,7 @@ export function MarkdownCell({ id, ws, dragHandleProps }: MarkdownCellProps) {
             </span>
           )}
 
-          <span className="rounded bg-neutral-200/60 px-1.5 py-0.2 font-mono text-[10px] text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+          <span className="rounded bg-neutral-200/60 px-2 py-0.5 font-mono text-[11px] text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
             Markdown
           </span>
         </div>
@@ -176,11 +176,11 @@ export function MarkdownCell({ id, ws, dragHandleProps }: MarkdownCellProps) {
           {isEditing ? (
             <button
               onClick={handleDone}
-              className="flex items-center gap-1 rounded px-1.5 py-0.5 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-950/40"
+              className="flex items-center gap-1 rounded px-2 py-0.5 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-950/40"
               title="Render markdown (Shift+Enter or Esc)"
             >
-              <Check size={12} />
-              <span className="font-sans text-[11px] font-medium">Done</span>
+              <Check size={13} />
+              <span className="font-sans text-xs font-medium">Done</span>
             </button>
           ) : (
             <button
@@ -218,7 +218,7 @@ export function MarkdownCell({ id, ws, dragHandleProps }: MarkdownCellProps) {
         <div className="p-3">
           <textarea
             ref={textareaRef}
-            className="w-full resize-y rounded border border-neutral-200 bg-neutral-50/50 p-2.5 font-mono text-[13px] leading-relaxed text-neutral-900 outline-none focus:border-blue-400 focus:bg-white dark:border-neutral-750 dark:bg-neutral-900/40 dark:text-neutral-100 dark:focus:border-blue-500 dark:focus:bg-neutral-900"
+            className="w-full resize-y rounded border border-neutral-200 bg-neutral-50/50 p-3 font-mono text-[14px] leading-relaxed text-neutral-900 outline-none focus:border-blue-400 focus:bg-white dark:border-neutral-750 dark:bg-neutral-900/40 dark:text-neutral-100 dark:focus:border-blue-500 dark:focus:bg-neutral-900"
             value={localSource}
             placeholder="Write Markdown here... (Shift+Enter or Esc to render)"
             onChange={(e) => setLocalSource(e.target.value)}
@@ -226,14 +226,14 @@ export function MarkdownCell({ id, ws, dragHandleProps }: MarkdownCellProps) {
             onBlur={handleDone}
             rows={Math.max(3, localSource.split("\n").length + 1)}
           />
-          <div className="mt-1 flex items-center justify-between text-[11px] text-neutral-400 dark:text-neutral-500">
+          <div className="mt-1 flex items-center justify-between text-xs text-neutral-400 dark:text-neutral-500">
             <span>Shift + Enter to finish editing</span>
             <span>Esc to return to Command Mode</span>
           </div>
         </div>
       ) : (
         <div
-          className="notion-prose min-h-[2.5rem] p-4 text-[14px]"
+          className="notion-prose min-h-[2.5rem] p-4 text-[15px]"
           dangerouslySetInnerHTML={{ __html: renderedHtml }}
         />
       )}

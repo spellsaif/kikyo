@@ -687,7 +687,7 @@ export default function App() {
           {/* Kernel Status Indicator */}
           {activeNb && viewMode === "notebook" && (
             <div
-              className="flex items-center gap-1.5 rounded-md border border-neutral-200/90 bg-neutral-50/70 px-2 py-1 font-mono text-[11px] text-neutral-600 dark:border-neutral-800 dark:bg-neutral-800/60 dark:text-neutral-300"
+              className="flex items-center gap-1.5 rounded-md border border-neutral-200/90 bg-neutral-50/70 px-2.5 py-1 font-mono text-xs text-neutral-600 dark:border-neutral-800 dark:bg-neutral-800/60 dark:text-neutral-300"
               title={`Python Kernel status: ${kernelStatus}`}
             >
               <span
@@ -707,7 +707,7 @@ export default function App() {
           {activeNb && viewMode === "notebook" && (
             <button
               onClick={toggleReactiveExecution}
-              className={`flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[11px] transition-all ${
+              className={`flex items-center gap-1.5 rounded-md border px-2.5 py-1 font-mono text-xs transition-all ${
                 reactiveExecution
                   ? "border-amber-300/80 bg-amber-50 text-amber-900 shadow-xs dark:border-amber-500/40 dark:bg-amber-950/40 dark:text-amber-200"
                   : "border-neutral-200/90 bg-neutral-100/70 text-neutral-600 dark:border-neutral-800 dark:bg-neutral-800/60 dark:text-neutral-400"
@@ -719,7 +719,7 @@ export default function App() {
               }
             >
               <Zap
-                size={11}
+                size={12}
                 className={reactiveExecution ? "text-amber-500 fill-amber-500" : "text-neutral-400"}
               />
               <span className="font-semibold hidden sm:inline">
@@ -731,7 +731,7 @@ export default function App() {
           {/* Active Mode Indicator Badge */}
           {activeNb && viewMode === "notebook" && (
             <div
-              className="hidden lg:flex items-center gap-1.5 rounded-md border border-neutral-200/90 bg-neutral-100/70 px-2 py-1 text-[11px] font-mono text-neutral-600 dark:border-neutral-800 dark:bg-neutral-800/60 dark:text-neutral-300"
+              className="hidden lg:flex items-center gap-1.5 rounded-md border border-neutral-200/90 bg-neutral-100/70 px-2.5 py-1 text-xs font-mono text-neutral-600 dark:border-neutral-800 dark:bg-neutral-800/60 dark:text-neutral-300"
               title={
                 mode === "edit"
                   ? "Edit Mode: Active editor has focus. Press Esc to return to Command Mode."
@@ -746,7 +746,7 @@ export default function App() {
               <span className="font-medium">
                 {mode === "edit" ? "Edit Mode" : "Command Mode"}
               </span>
-              <span className="text-neutral-400 text-[10px]">
+              <span className="text-neutral-400 text-[11px]">
                 ({mode === "edit" ? "Esc" : "Enter"})
               </span>
             </div>
@@ -755,12 +755,12 @@ export default function App() {
           {/* Command Palette Trigger Button */}
           <button
             onClick={() => setShowCommandPalette(true)}
-            className="flex items-center gap-1.5 rounded-md border border-neutral-200/90 bg-neutral-50/70 px-2 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-800 dark:bg-neutral-800/60 dark:text-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+            className="flex items-center gap-1.5 rounded-md border border-neutral-200/90 bg-neutral-50/70 px-2.5 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-800 dark:bg-neutral-800/60 dark:text-neutral-200 dark:hover:bg-neutral-800 transition-colors"
             title="Open Command Palette (Ctrl+K or Cmd+K)"
           >
             <Command size={12} className="text-neutral-500 dark:text-neutral-400" />
             <span className="hidden sm:inline">Commands</span>
-            <kbd className="rounded border border-neutral-200 bg-white px-1 py-0.2 font-mono text-[9px] text-neutral-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400">
+            <kbd className="rounded border border-neutral-200 bg-white px-1 py-0.2 font-mono text-[10px] text-neutral-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400">
               Ctrl+K
             </kbd>
           </button>
@@ -769,7 +769,7 @@ export default function App() {
           {activeNb && viewMode === "notebook" && (
             <button
               onClick={() => setShowGraphDrawer(!showGraphDrawer)}
-              className={`flex items-center gap-1 rounded border px-2 py-1 font-medium transition-colors ${
+              className={`flex items-center gap-1 rounded border px-2.5 py-1 text-xs font-medium transition-colors ${
                 showGraphDrawer
                   ? "border-blue-500/80 bg-blue-50 text-blue-700 dark:border-blue-500/80 dark:bg-blue-950/60 dark:text-blue-300"
                   : "border-neutral-200/80 bg-neutral-50/70 text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-800 dark:bg-neutral-800/60 dark:text-neutral-300 dark:hover:bg-neutral-800"
@@ -1105,17 +1105,17 @@ export default function App() {
                   <div className="mt-6 flex items-center gap-2 pt-2">
                     <button
                       onClick={() => handleAddBottom("code")}
-                      className="flex items-center gap-1.5 rounded-md border border-dashed border-neutral-300 bg-neutral-50/50 px-3 py-1.5 text-xs font-medium text-neutral-600 transition-colors hover:border-neutral-400 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900/30 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:bg-neutral-800/50"
+                      className="flex items-center gap-1.5 rounded-md border border-dashed border-neutral-300 bg-neutral-50/50 px-3.5 py-2 text-[13px] font-medium text-neutral-600 transition-colors hover:border-neutral-400 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900/30 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:bg-neutral-800/50"
                     >
-                      <Plus size={13} />
+                      <Plus size={14} />
                       <span>Add code block</span>
                     </button>
 
                     <button
                       onClick={() => handleAddBottom("markdown")}
-                      className="flex items-center gap-1.5 rounded-md border border-dashed border-neutral-300 bg-neutral-50/50 px-3 py-1.5 text-xs font-medium text-neutral-600 transition-colors hover:border-neutral-400 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900/30 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:bg-neutral-800/50"
+                      className="flex items-center gap-1.5 rounded-md border border-dashed border-neutral-300 bg-neutral-50/50 px-3.5 py-2 text-[13px] font-medium text-neutral-600 transition-colors hover:border-neutral-400 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900/30 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:bg-neutral-800/50"
                     >
-                      <FileText size={13} />
+                      <FileText size={14} />
                       <span>Add text (markdown)</span>
                     </button>
                   </div>
@@ -1127,7 +1127,7 @@ export default function App() {
                   <div className="flex max-h-24 w-full cursor-grabbing items-center justify-between rounded-xl border-2 border-blue-500 bg-white/95 px-4 py-3 shadow-2xl backdrop-blur-sm dark:bg-[#1a1a1a]/95 dark:border-blue-400">
                     <div className="flex items-center gap-2.5 overflow-hidden">
                       <GripVertical size={16} className="text-blue-500 shrink-0" />
-                      <span className="rounded bg-neutral-200/80 px-2 py-0.5 font-mono text-[10px] font-semibold text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 shrink-0">
+                      <span className="rounded bg-neutral-200/80 px-2 py-0.5 font-mono text-[11px] font-semibold text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 shrink-0">
                         [{activeDragCell.id}] {activeDragCell.cell_type === "markdown" ? "Text" : "Code"}
                       </span>
                       <span className="truncate font-mono text-xs text-neutral-600 dark:text-neutral-300">

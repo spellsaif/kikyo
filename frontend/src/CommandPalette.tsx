@@ -472,7 +472,7 @@ export function CommandPalette({
                       cmd.action();
                     }}
                     onMouseEnter={() => setSelectedIndex(idx)}
-                    className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left transition-colors text-xs ${
+                    className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left transition-colors text-[13px] ${
                       isSelected
                         ? "bg-blue-50 text-blue-900 dark:bg-blue-950/50 dark:text-blue-100 font-medium"
                         : "hover:bg-neutral-100/70 dark:hover:bg-neutral-800/60 text-neutral-700 dark:text-neutral-300"
@@ -486,17 +486,17 @@ export function CommandPalette({
                             : "bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400"
                         }`}
                       >
-                        <Icon size={14} />
+                        <Icon size={15} />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span>{cmd.title}</span>
-                          <span className="rounded bg-neutral-100 px-1.5 py-0.2 font-mono text-[9px] text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+                          <span className="font-medium">{cmd.title}</span>
+                          <span className="rounded bg-neutral-100 px-1.5 py-0.2 font-mono text-[10px] text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
                             {cmd.category}
                           </span>
                         </div>
                         {cmd.description && (
-                          <p className="text-[11px] text-neutral-400 dark:text-neutral-500 font-normal">
+                          <p className="text-xs text-neutral-400 dark:text-neutral-500 font-normal mt-0.5">
                             {cmd.description}
                           </p>
                         )}
@@ -504,7 +504,7 @@ export function CommandPalette({
                     </div>
 
                     {cmd.shortcut && (
-                      <kbd className="rounded border border-neutral-200 bg-neutral-50 px-1.5 py-0.5 font-mono text-[10px] text-neutral-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400">
+                      <kbd className="rounded border border-neutral-200 bg-neutral-50 px-1.5 py-0.5 font-mono text-[11px] text-neutral-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400">
                         {cmd.shortcut}
                       </kbd>
                     )}
@@ -516,16 +516,16 @@ export function CommandPalette({
         </div>
 
         {/* Footer Navigation Hints */}
-        <div className="flex items-center justify-between border-t border-neutral-150 bg-neutral-50/70 px-4 py-2 text-[11px] text-neutral-400 dark:border-neutral-800/80 dark:bg-[#1a1a1a]">
+        <div className="flex items-center justify-between border-t border-neutral-150 bg-neutral-50/70 px-4 py-2.5 text-xs text-neutral-400 dark:border-neutral-800/80 dark:bg-[#1a1a1a]">
           <div className="flex items-center gap-3">
             <span>
-              <kbd className="font-mono text-[10px]">↑</kbd> <kbd className="font-mono text-[10px]">↓</kbd> Navigate
+              <kbd className="font-mono text-[11px]">↑</kbd> <kbd className="font-mono text-[11px]">↓</kbd> Navigate
             </span>
             <span>
-              <kbd className="font-mono text-[10px]">↵</kbd> Select
+              <kbd className="font-mono text-[11px]">↵</kbd> Select
             </span>
             <span>
-              <kbd className="font-mono text-[10px]">Esc</kbd> Close
+              <kbd className="font-mono text-[11px]">Esc</kbd> Close
             </span>
           </div>
           <span>Kikyo Command Palette</span>

@@ -53,9 +53,9 @@ export function Cell({
                 const newId = addCell(id, "code");
                 if (ws) ws.send({ op: "insert_cell", cell_id: newId, after_id: id, cell_type: "code" });
               }}
-              className="flex items-center gap-1 rounded-full border border-neutral-200 bg-white px-2 py-0.5 text-[11px] font-medium text-neutral-600 shadow-xs hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+              className="flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-2.5 py-1 text-xs font-medium text-neutral-600 shadow-xs hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
             >
-              <Plus size={10} />
+              <Plus size={11} />
               <span>Code</span>
             </button>
             <button
@@ -63,9 +63,9 @@ export function Cell({
                 const newId = addCell(id, "markdown");
                 if (ws) ws.send({ op: "insert_cell", cell_id: newId, after_id: id, cell_type: "markdown" });
               }}
-              className="flex items-center gap-1 rounded-full border border-neutral-200 bg-white px-2 py-0.5 text-[11px] font-medium text-neutral-600 shadow-xs hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+              className="flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-2.5 py-1 text-xs font-medium text-neutral-600 shadow-xs hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
             >
-              <FileText size={10} />
+              <FileText size={11} />
               <span>Text</span>
             </button>
           </div>
@@ -221,9 +221,9 @@ export function Cell({
         }}
       >
         {/* Cell Header Toolbar */}
-        <div className="flex items-center justify-between border-b border-neutral-100 bg-neutral-50/70 px-2.5 py-1 text-xs select-none dark:border-neutral-800/60 dark:bg-[#171717]">
+        <div className="flex items-center justify-between border-b border-neutral-100 bg-neutral-50/70 px-3 py-1.5 text-xs select-none dark:border-neutral-800/60 dark:bg-[#171717]">
           {/* Left toolbar */}
-          <div className="flex items-center gap-1.5 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap">
             {dragHandleProps && (
               <button
                 {...dragHandleProps.listeners}
@@ -231,7 +231,7 @@ export function Cell({
                 className="cursor-grab active:cursor-grabbing rounded p-0.5 text-neutral-400 hover:bg-neutral-200/60 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-200 transition-colors"
                 title="Drag to reorder cell"
               >
-                <GripVertical size={13} />
+                <GripVertical size={14} />
               </button>
             )}
 
@@ -241,31 +241,31 @@ export function Cell({
                   e.stopPropagation();
                   if (ws) ws.send({ op: "interrupt" });
                 }}
-                className="flex items-center gap-1 rounded bg-rose-50 px-2 py-0.5 font-medium text-rose-700 border border-rose-200 transition-colors hover:bg-rose-100 hover:border-rose-300 dark:bg-rose-950/60 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-900/80 cursor-pointer shadow-xs animate-pulse"
+                className="flex items-center gap-1.5 rounded bg-rose-50 px-2.5 py-1 font-medium text-rose-700 border border-rose-200 transition-colors hover:bg-rose-100 hover:border-rose-300 dark:bg-rose-950/60 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-900/80 cursor-pointer shadow-xs animate-pulse"
                 title="Stop execution (Interrupt Kernel)"
               >
-                <Square size={10} className="fill-current text-rose-600 dark:text-rose-400" />
-                <span className="text-[11px] font-sans font-semibold">Stop</span>
+                <Square size={11} className="fill-current text-rose-600 dark:text-rose-400" />
+                <span className="text-xs font-sans font-semibold">Stop</span>
               </button>
             ) : (
               <button
                 onClick={runCell}
-                className="flex items-center gap-1 rounded bg-neutral-100 px-2 py-0.5 font-medium text-neutral-800 transition-colors hover:bg-neutral-200/80 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 cursor-pointer"
+                className="flex items-center gap-1.5 rounded bg-neutral-100 px-2.5 py-1 font-medium text-neutral-800 transition-colors hover:bg-neutral-200/80 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 cursor-pointer"
                 title="Run cell (Shift+Enter to run & advance, Ctrl+Enter to run in-place)"
               >
-                <Play size={10} className="fill-current text-neutral-800 dark:text-neutral-200" />
-                <span className="text-[11px] font-sans">Run</span>
+                <Play size={11} className="fill-current text-neutral-800 dark:text-neutral-200" />
+                <span className="text-xs font-sans">Run</span>
               </button>
             )}
 
-            <span className="font-mono text-[10.5px] text-neutral-400 dark:text-neutral-500">
+            <span className="font-mono text-xs text-neutral-400 dark:text-neutral-500">
               [{id}]
             </span>
 
             {/* Active focus status badge */}
             {isActive && (
               <span
-                className={`rounded px-1.5 py-0.2 font-mono text-[10px] font-medium ${
+                className={`rounded px-2 py-0.5 font-mono text-[11px] font-medium ${
                   mode === "edit"
                     ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
                     : "bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300"
@@ -275,14 +275,14 @@ export function Cell({
               </span>
             )}
 
-            <span className="rounded bg-neutral-200/60 px-1.5 py-0.2 font-mono text-[10px] text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+            <span className="rounded bg-neutral-200/60 px-2 py-0.5 font-mono text-[11px] text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
               Python
             </span>
 
             {/* Execution duration */}
             {typeof cell.executionDuration === "number" && (
               <span
-                className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500"
+                className="font-mono text-[11px] text-neutral-400 dark:text-neutral-500"
                 title={`Last execution took ${cell.executionDuration}s`}
               >
                 {cell.executionDuration}s
@@ -291,18 +291,18 @@ export function Cell({
 
             {/* Status pills */}
             {cell.status === "running" && (
-              <span className="flex items-center gap-1 rounded bg-blue-100/80 px-1.5 py-0.2 text-[10px] font-medium text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
+              <span className="flex items-center gap-1.5 rounded bg-blue-100/80 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-500" />
                 running
               </span>
             )}
             {cell.status === "error" && (
-              <span className="rounded bg-rose-100/80 px-1.5 py-0.2 text-[10px] font-medium text-rose-700 dark:bg-rose-950/60 dark:text-rose-300">
+              <span className="rounded bg-rose-100/80 px-2 py-0.5 text-[11px] font-medium text-rose-700 dark:bg-rose-950/60 dark:text-rose-300">
                 error
               </span>
             )}
             {cell.status === "aborted" && (
-              <span className="rounded bg-neutral-200/80 px-1.5 py-0.2 text-[10px] font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
+              <span className="rounded bg-neutral-200/80 px-2 py-0.5 text-[11px] font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
                 aborted
               </span>
             )}
@@ -310,7 +310,7 @@ export function Cell({
             {/* Defined symbols pill */}
             {defines.length > 0 && (
               <span
-                className="rounded bg-emerald-50 px-1.5 py-0.2 font-mono text-[10px] text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/50 dark:border-emerald-800/50"
+                className="rounded bg-emerald-50 px-2 py-0.5 font-mono text-[11px] text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/50 dark:border-emerald-800/50"
                 title={`Defines global symbols: ${defines.join(", ")}`}
               >
                 def: {defines.join(", ")}
@@ -320,7 +320,7 @@ export function Cell({
             {/* Downstream dependents pill */}
             {dependents.length > 0 && (
               <span
-                className="rounded bg-sky-50 px-1.5 py-0.2 font-mono text-[10px] text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200/50 dark:border-sky-800/50"
+                className="rounded bg-sky-50 px-2 py-0.5 font-mono text-[11px] text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200/50 dark:border-sky-800/50"
                 title={`Triggers ${dependents.length} downstream cells on execution`}
               >
                 → {dependents.length} {dependents.length === 1 ? "dep" : "deps"}
@@ -329,7 +329,7 @@ export function Cell({
 
             {dupSymbols.length > 0 && (
               <span
-                className="rounded bg-amber-100/80 px-1.5 py-0.2 text-[10px] font-medium text-amber-800 dark:bg-amber-950/60 dark:text-amber-300"
+                className="rounded bg-amber-100/80 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-950/60 dark:text-amber-300"
                 title={`Duplicate symbol definition: ${dupSymbols.join(", ")}`}
               >
                 dup: {dupSymbols.join(", ")}
@@ -402,7 +402,7 @@ export function Cell({
         </div>
 
         {/* Code Editor */}
-        <div className="cm-notion-frame text-[13px]">
+        <div className="cm-notion-frame text-[14.5px]">
           <CodeMirror
             onCreateEditor={(view) => {
               viewRef.current = view;
@@ -448,9 +448,9 @@ export function Cell({
               const newId = addCell(id, "code");
               if (ws) ws.send({ op: "insert_cell", cell_id: newId, after_id: id, cell_type: "code" });
             }}
-            className="flex items-center gap-1 rounded-full border border-neutral-200 bg-white px-2 py-0.5 text-[11px] font-medium text-neutral-600 shadow-xs hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+            className="flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-2.5 py-1 text-xs font-medium text-neutral-600 shadow-xs hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
           >
-            <Plus size={10} />
+            <Plus size={11} />
             <span>Code</span>
           </button>
           <button
@@ -458,9 +458,9 @@ export function Cell({
               const newId = addCell(id, "markdown");
               if (ws) ws.send({ op: "insert_cell", cell_id: newId, after_id: id, cell_type: "markdown" });
             }}
-            className="flex items-center gap-1 rounded-full border border-neutral-200 bg-white px-2 py-0.5 text-[11px] font-medium text-neutral-600 shadow-xs hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+            className="flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-2.5 py-1 text-xs font-medium text-neutral-600 shadow-xs hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
           >
-            <FileText size={10} />
+            <FileText size={11} />
             <span>Text</span>
           </button>
         </div>
