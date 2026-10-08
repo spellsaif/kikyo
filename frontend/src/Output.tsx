@@ -55,12 +55,12 @@ function StreamOutput({
       className={`group/stream relative rounded border font-mono text-[13.5px] leading-relaxed transition-colors ${
         isStderr
           ? "border-amber-200/60 bg-amber-50/40 text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/20 dark:text-amber-200"
-          : "border-neutral-200/80 bg-neutral-50/80 text-neutral-800 dark:border-neutral-800/80 dark:bg-[#161616] dark:text-neutral-200"
+          : "border-neutral-200/80 bg-neutral-50/80 text-neutral-800 dark:border-neutral-800/80 dark:bg-[#0e0e11] dark:text-neutral-200"
       }`}
     >
       {/* Stream Controls Header (shown if long output or hovered) */}
       {isLong && (
-        <div className="flex items-center justify-between border-b border-neutral-200/60 px-3 py-1 text-xs text-neutral-500 dark:border-neutral-800/60 dark:text-neutral-400">
+        <div className="flex items-center justify-between border-b border-neutral-200/60 px-3 py-1 text-xs text-neutral-500 dark:border-neutral-800/60 dark:bg-[#141417] dark:text-neutral-400">
           <div className="flex items-center gap-1.5 font-sans font-medium">
             <Terminal size={12} className="opacity-70" />
             <span>{isStderr ? "stderr stream" : "stdout stream"}</span>

@@ -61,6 +61,7 @@ export class KikyoWSClient {
         if (msg.data.restarted) {
           store.setKernelStatus("idle");
           store.cells.forEach((c) => {
+            store.setInputRequest(c.id, null);
             if (c.status === "running") {
               store.setCellStatus(c.id, "idle");
             }
@@ -70,10 +71,12 @@ export class KikyoWSClient {
           if (msg.cell_id) {
             store.setCellStatus(msg.cell_id, "running");
             store.clearOutputs(msg.cell_id);
+            store.setInputRequest(msg.cell_id, null);
           }
         } else if (state === "idle") {
           store.setKernelStatus("idle");
           if (msg.cell_id) {
+            store.setInputRequest(msg.cell_id, null);
             const currentCell = store.cells.find((c) => c.id === msg.cell_id);
             if (currentCell?.status !== "error") {
               store.setCellStatus(msg.cell_id, "idle");
@@ -83,7 +86,13 @@ export class KikyoWSClient {
             }
           }
         }
+      } else if (msg.kind === "input_request") {
+        store.setInputRequest(msg.cell_id, {
+          prompt: msg.data?.prompt ?? "",
+          password: !!msg.data?.password,
+        });
       } else if (msg.kind === "error") {
+        store.setInputRequest(msg.cell_id, null);
         store.setCellStatus(msg.cell_id, "error");
         store.appendOutput(msg.cell_id, { kind: "error", data: msg.data });
       } else {

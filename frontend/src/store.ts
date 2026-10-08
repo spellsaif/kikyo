@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { CellData, OutputData } from "./types";
+import type { CellData, OutputData, InputPromptData } from "./types";
 
 interface KikyoState {
   theme: "dark" | "light";
@@ -49,6 +49,7 @@ interface KikyoState {
   appendOutput: (id: string, output: OutputData) => void;
   clearOutputs: (id: string) => void;
   clearAllOutputs: () => void;
+  setInputRequest: (id: string, req: InputPromptData | null) => void;
   setCellStatus: (id: string, status: CellData["status"]) => void;
   setDuplicates: (dups: Record<string, string[]>) => void;
   setCycleWarning: (warning: { cells: string[]; message: string } | null) => void;
@@ -57,13 +58,13 @@ interface KikyoState {
 const savedTheme =
   (typeof window !== "undefined" && (localStorage.getItem("kikyo_theme") as "dark" | "light")) || "dark";
 const savedFullWidth =
-  typeof window !== "undefined" && localStorage.getItem("kikyo_full_width") === "true";
+  typeof window !== "undefined" ? localStorage.getItem("kikyo_full_width") !== "false" : true;
 
 export const useKikyoStore = create<KikyoState>((set) => ({
   theme: savedTheme,
   fullWidth: savedFullWidth,
   mode: "command",
-  notebookName: "analysis",
+  notebookName: "",
   notebooks: [],
   cells: [],
   activeCellId: null,
@@ -220,17 +221,32 @@ export const useKikyoStore = create<KikyoState>((set) => ({
 
   clearOutputs: (id) =>
     set((state) => ({
-      cells: state.cells.map((c) => (c.id === id ? { ...c, outputs: [] } : c)),
+      cells: state.cells.map((c) =>
+        c.id === id ? { ...c, outputs: [], inputRequest: null } : c
+      ),
     })),
 
   clearAllOutputs: () =>
     set((state) => ({
-      cells: state.cells.map((c) => ({ ...c, outputs: [] })),
+      cells: state.cells.map((c) => ({ ...c, outputs: [], inputRequest: null })),
+    })),
+
+  setInputRequest: (id, inputRequest) =>
+    set((state) => ({
+      cells: state.cells.map((c) => (c.id === id ? { ...c, inputRequest } : c)),
     })),
 
   setCellStatus: (id, status) =>
     set((state) => ({
-      cells: state.cells.map((c) => (c.id === id ? { ...c, status } : c)),
+      cells: state.cells.map((c) =>
+        c.id === id
+          ? {
+              ...c,
+              status,
+              inputRequest: status !== "running" ? null : c.inputRequest,
+            }
+          : c
+      ),
     })),
 
   setCellDuration: (id, duration) =>

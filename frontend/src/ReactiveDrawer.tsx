@@ -40,7 +40,7 @@ export function ReactiveDrawer() {
 
   return (
     <div
-      className="fixed inset-y-0 right-0 z-40 flex w-96 flex-col border-l border-neutral-200 bg-white/95 shadow-2xl backdrop-blur-md dark:border-neutral-800 dark:bg-[#1c1c1c]/95 text-neutral-800 dark:text-neutral-100 animate-in slide-in-from-right duration-150"
+      className="fixed inset-y-0 right-0 z-40 flex w-96 flex-col border-l border-neutral-200/80 bg-white/95 shadow-2xl backdrop-blur-md dark:border-neutral-800/80 dark:bg-[#0e0e11]/95 text-neutral-800 dark:text-neutral-100 animate-in slide-in-from-right duration-150"
     >
       {/* Header */}
       <div className="flex h-12 items-center justify-between border-b border-neutral-200/80 px-4 dark:border-neutral-800">
@@ -187,7 +187,7 @@ export function ReactiveDrawer() {
           {Object.keys(symbolMap).length === 0 ? (
             <p className="text-neutral-400 italic text-xs">No global variables declared yet.</p>
           ) : (
-            <div className="divide-y divide-neutral-150 rounded-lg border border-neutral-200/80 bg-white dark:divide-neutral-800 dark:border-neutral-800/80 dark:bg-[#202020]">
+            <div className="divide-y divide-neutral-200/60 rounded-lg border border-neutral-200/80 bg-white dark:divide-neutral-800/60 dark:border-neutral-800/80 dark:bg-[#141417]">
               {Object.entries(symbolMap).map(([sym, meta]) => (
                 <div key={sym} className="flex items-center justify-between p-2.5">
                   <div className="flex items-center gap-2">

@@ -24,20 +24,20 @@
 
 .dark,
 [data-theme="dark"] {
-  --canvas: #191919;
-  --surface: #202020;
-  --surface-raised: #262626;
-  --surface-hover: #2c2c2c;
-  --border: rgba(255, 255, 255, 0.12);
-  --border-strong: rgba(255, 255, 255, 0.22);
-  --border-focus: rgba(255, 255, 255, 0.45);
+  --canvas: #09090b;
+  --surface: #121215;
+  --surface-raised: #18181b;
+  --surface-hover: #202024;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --border-focus: rgba(255, 255, 255, 0.3);
 
-  --text-primary: rgba(255, 255, 255, 0.92);
-  --text-muted: rgba(255, 255, 255, 0.58);
-  --text-faint: rgba(255, 255, 255, 0.35);
+  --text-primary: #ededed;
+  --text-muted: #a1a1aa;
+  --text-faint: #71717a;
 
-  --accent: #529cca;
-  --accent-tint: rgba(82, 156, 202, 0.12);
+  --accent: #ededed;
+  --accent-tint: rgba(255, 255, 255, 0.08);
 }
 
 html {

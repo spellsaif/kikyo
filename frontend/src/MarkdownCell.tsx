@@ -100,10 +100,10 @@ export function MarkdownCell({ id, ws, dragHandleProps }: MarkdownCellProps) {
       className={`group/block relative my-3 overflow-hidden rounded-lg border transition-all ${
         isActive
           ? isEditing || mode === "edit"
-            ? "border-emerald-500 shadow-md ring-2 ring-emerald-500/20 dark:border-emerald-500 dark:ring-emerald-500/30"
-            : "border-blue-500 shadow-md ring-2 ring-blue-500/20 dark:border-blue-500 dark:ring-blue-500/30"
-          : "border-neutral-200 hover:border-neutral-300 dark:border-neutral-800 dark:hover:border-neutral-700 shadow-xs"
-      } bg-white dark:bg-[#1c1c1c]`}
+            ? "border-neutral-900 shadow-md ring-2 ring-neutral-900/10 dark:border-neutral-200 dark:ring-white/15"
+            : "border-neutral-400 shadow-md ring-1 ring-neutral-400/20 dark:border-neutral-400 dark:ring-neutral-400/20"
+          : "border-neutral-200/80 hover:border-neutral-300 dark:border-neutral-800/80 dark:hover:border-neutral-700 shadow-xs"
+      } bg-white dark:bg-[#121214]`}
       onClick={() => setActiveCellId(id)}
       onDoubleClick={() => {
         setIsEditing(true);
@@ -111,7 +111,7 @@ export function MarkdownCell({ id, ws, dragHandleProps }: MarkdownCellProps) {
       }}
     >
       {/* Block Header Toolbar */}
-      <div className="flex items-center justify-between border-b border-neutral-100 bg-neutral-50/70 px-3 py-1.5 text-xs select-none dark:border-neutral-800/60 dark:bg-[#171717]">
+      <div className="flex items-center justify-between border-b border-neutral-100 bg-neutral-50/70 px-3 py-1.5 text-xs select-none dark:border-neutral-800/70 dark:bg-[#17171a]">
         <div className="flex items-center gap-2 flex-wrap">
           {dragHandleProps && (
             <button
@@ -133,15 +133,15 @@ export function MarkdownCell({ id, ws, dragHandleProps }: MarkdownCellProps) {
             <span
               className={`rounded px-2 py-0.5 font-mono text-[11px] font-medium ${
                 isEditing || mode === "edit"
-                  ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
-                  : "bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300"
+                  ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-950 font-semibold"
+                  : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-200"
               }`}
             >
               {isEditing || mode === "edit" ? "Editing" : "Selected"}
             </span>
           )}
 
-          <span className="rounded bg-neutral-200/60 px-2 py-0.5 font-mono text-[11px] text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+          <span className="rounded bg-neutral-200/60 px-2 py-0.5 font-mono text-[11px] text-neutral-500 dark:bg-neutral-800/80 dark:text-neutral-400">
             Markdown
           </span>
         </div>

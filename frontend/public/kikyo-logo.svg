@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <defs>
+    <!-- Light Petal Facet Gradient -->
+    <linearGradient id="kikyo-petal-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818CF8"/>
+      <stop offset="60%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+
+    <!-- Deep Petal Facet Gradient -->
+    <linearGradient id="kikyo-petal-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="60%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#3730A3"/>
+    </linearGradient>
+
+    <!-- Center Golden Stamen Gradient -->
+    <linearGradient id="kikyo-stamen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+
+    <!-- Soft Ambient Drop Shadow for crisp elevation -->
+    <filter id="kikyo-glow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#1E1B4B" flood-opacity="0.32"/>
+    </filter>
+  </defs>
+
+  <!-- Flower Petals Group -->
+  <g filter="url(#kikyo-glow)">
+    <path d="M 32.00 32.00 L 32.00 3.50 C 34.74 5.94 38.67 12.62 38.94 22.45 Z" fill="url(#kikyo-petal-dark)"/>
+    <path d="M 32.00 32.00 L 59.11 23.19 C 57.63 26.55 52.50 32.36 43.22 35.65 Z" fill="url(#kikyo-petal-dark)"/>
+    <path d="M 32.00 32.00 L 48.75 55.06 C 45.10 54.69 37.99 51.60 32.00 43.80 Z" fill="url(#kikyo-petal-dark)"/>
+    <path d="M 32.00 32.00 L 15.25 55.06 C 14.47 51.47 15.21 43.76 20.78 35.65 Z" fill="url(#kikyo-petal-dark)"/>
+    <path d="M 32.00 32.00 L 4.89 23.19 C 8.07 21.34 15.63 19.66 25.06 22.45 Z" fill="url(#kikyo-petal-dark)"/>
+    <path d="M 32.00 32.00 L 25.06 22.45 C 25.33 12.62 29.26 5.94 32.00 3.50 Z" fill="url(#kikyo-petal-light)"/>
+    <path d="M 32.00 32.00 L 38.94 22.45 C 48.37 19.66 55.93 21.34 59.11 23.19 Z" fill="url(#kikyo-petal-light)"/>
+    <path d="M 32.00 32.00 L 43.22 35.65 C 48.79 43.76 49.53 51.47 48.75 55.06 Z" fill="url(#kikyo-petal-light)"/>
+    <path d="M 32.00 32.00 L 32.00 43.80 C 26.01 51.60 18.90 54.69 15.25 55.06 Z" fill="url(#kikyo-petal-light)"/>
+    <path d="M 32.00 32.00 L 20.78 35.65 C 11.50 32.36 6.37 26.55 4.89 23.19 Z" fill="url(#kikyo-petal-light)"/>
+  </g>
+
+  <!-- Subtle Petal Center Vein Creases -->
+  <g opacity="0.35" stroke="#EEF2FF" stroke-width="0.75" stroke-linecap="round">
+    <path d="M 32.00 32.00 L 32.00 3.50"/>
+    <path d="M 32.00 32.00 L 59.11 23.19"/>
+    <path d="M 32.00 32.00 L 48.75 55.06"/>
+    <path d="M 32.00 32.00 L 15.25 55.06"/>
+    <path d="M 32.00 32.00 L 4.89 23.19"/>
+  </g>
+
+  <!-- Central Golden Pistil & Stamen (Platycodon star) -->
+  <g id="kikyo-center">
+    <polygon points="32.00,24.50 34.00,29.25 39.13,29.68 35.23,33.05 36.41,38.07 32.00,35.40 27.59,38.07 28.77,33.05 24.87,29.68 30.00,29.25" fill="url(#kikyo-stamen)" stroke="#D97706" stroke-width="0.6"/>
+    <circle cx="32.00" cy="24.50" r="1.15" fill="#FEF08A"/>
+    <circle cx="39.13" cy="29.68" r="1.15" fill="#FEF08A"/>
+    <circle cx="36.41" cy="38.07" r="1.15" fill="#FEF08A"/>
+    <circle cx="27.59" cy="38.07" r="1.15" fill="#FEF08A"/>
+    <circle cx="24.87" cy="29.68" r="1.15" fill="#FEF08A"/>
+    <circle cx="32.00" cy="32.00" r="2.4" fill="#FFFBEB" stroke="#FBBF24" stroke-width="0.5"/>
+  </g>
+</svg>

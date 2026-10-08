@@ -430,7 +430,7 @@ export function CommandPalette({
       onClick={() => setShowCommandPalette(false)}
     >
       <div
-        className="w-full max-w-xl overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-2xl dark:border-neutral-800 dark:bg-[#1e1e1e] text-neutral-800 dark:text-neutral-100"
+        className="w-full max-w-xl overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-2xl dark:border-neutral-800 dark:bg-[#121215] text-neutral-800 dark:text-neutral-100"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
       >
@@ -516,7 +516,7 @@ export function CommandPalette({
         </div>
 
         {/* Footer Navigation Hints */}
-        <div className="flex items-center justify-between border-t border-neutral-150 bg-neutral-50/70 px-4 py-2.5 text-xs text-neutral-400 dark:border-neutral-800/80 dark:bg-[#1a1a1a]">
+        <div className="flex items-center justify-between border-t border-neutral-200/60 bg-neutral-50/70 px-4 py-2.5 text-xs text-neutral-400 dark:border-neutral-800/80 dark:bg-[#0e0e11]">
           <div className="flex items-center gap-3">
             <span>
               <kbd className="font-mono text-[11px]">↑</kbd> <kbd className="font-mono text-[11px]">↓</kbd> Navigate

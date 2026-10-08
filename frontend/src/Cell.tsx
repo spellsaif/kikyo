@@ -9,6 +9,7 @@ import { Play, Square, Trash2, Plus, FileText, Eraser, ArrowUp, ArrowDown, GripV
 import { useKikyoStore } from "./store";
 import type { KikyoWSClient } from "./ws";
 import { Output } from "./Output";
+import { InputPrompt } from "./InputPrompt";
 import { MarkdownCell } from "./MarkdownCell";
 
 export function Cell({
@@ -212,16 +213,16 @@ export function Cell({
         className={`group/block relative my-3 overflow-hidden rounded-lg border transition-all ${
           isActive
             ? mode === "edit"
-              ? "border-emerald-500 shadow-md ring-2 ring-emerald-500/20 dark:border-emerald-500 dark:ring-emerald-500/30"
-              : "border-blue-500 shadow-md ring-2 ring-blue-500/20 dark:border-blue-500 dark:ring-blue-500/30"
-            : "border-neutral-200 hover:border-neutral-300 dark:border-neutral-800 dark:hover:border-neutral-700 shadow-xs"
-        } bg-white dark:bg-[#1c1c1c]`}
+              ? "border-neutral-900 shadow-md ring-2 ring-neutral-900/10 dark:border-neutral-200 dark:ring-white/15"
+              : "border-neutral-400 shadow-md ring-1 ring-neutral-400/20 dark:border-neutral-400 dark:ring-neutral-400/20"
+            : "border-neutral-200/80 hover:border-neutral-300 dark:border-neutral-800/80 dark:hover:border-neutral-700 shadow-xs"
+        } bg-white dark:bg-[#121214]`}
         onClick={() => {
           setActiveCellId(id);
         }}
       >
         {/* Cell Header Toolbar */}
-        <div className="flex items-center justify-between border-b border-neutral-100 bg-neutral-50/70 px-3 py-1.5 text-xs select-none dark:border-neutral-800/60 dark:bg-[#171717]">
+        <div className="flex items-center justify-between border-b border-neutral-100 bg-neutral-50/70 px-3 py-1.5 text-xs select-none dark:border-neutral-800/70 dark:bg-[#17171a]">
           {/* Left toolbar */}
           <div className="flex items-center gap-2 flex-wrap">
             {dragHandleProps && (
@@ -241,7 +242,7 @@ export function Cell({
                   e.stopPropagation();
                   if (ws) ws.send({ op: "interrupt" });
                 }}
-                className="flex items-center gap-1.5 rounded bg-rose-50 px-2.5 py-1 font-medium text-rose-700 border border-rose-200 transition-colors hover:bg-rose-100 hover:border-rose-300 dark:bg-rose-950/60 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-900/80 cursor-pointer shadow-xs animate-pulse"
+                className="flex items-center gap-1.5 rounded bg-rose-50 px-2.5 py-1 font-medium text-rose-700 border border-rose-200 transition-colors hover:bg-rose-100 hover:border-rose-300 dark:bg-rose-950/40 dark:border-rose-900/50 dark:text-rose-300 dark:hover:bg-rose-900/60 cursor-pointer shadow-xs animate-pulse"
                 title="Stop execution (Interrupt Kernel)"
               >
                 <Square size={11} className="fill-current text-rose-600 dark:text-rose-400" />
@@ -250,7 +251,7 @@ export function Cell({
             ) : (
               <button
                 onClick={runCell}
-                className="flex items-center gap-1.5 rounded bg-neutral-100 px-2.5 py-1 font-medium text-neutral-800 transition-colors hover:bg-neutral-200/80 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 cursor-pointer"
+                className="flex items-center gap-1.5 rounded bg-neutral-100 px-2.5 py-1 font-medium text-neutral-800 transition-colors hover:bg-neutral-200/80 dark:bg-neutral-800/90 dark:text-neutral-200 dark:hover:bg-neutral-700 cursor-pointer"
                 title="Run cell (Shift+Enter to run & advance, Ctrl+Enter to run in-place)"
               >
                 <Play size={11} className="fill-current text-neutral-800 dark:text-neutral-200" />
@@ -267,15 +268,15 @@ export function Cell({
               <span
                 className={`rounded px-2 py-0.5 font-mono text-[11px] font-medium ${
                   mode === "edit"
-                    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
-                    : "bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300"
+                    ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-950 font-semibold"
+                    : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-200"
                 }`}
               >
                 {mode === "edit" ? "Editing" : "Selected"}
               </span>
             )}
 
-            <span className="rounded bg-neutral-200/60 px-2 py-0.5 font-mono text-[11px] text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+            <span className="rounded bg-neutral-200/60 px-2 py-0.5 font-mono text-[11px] text-neutral-500 dark:bg-neutral-800/80 dark:text-neutral-400">
               Python
             </span>
 
@@ -291,13 +292,13 @@ export function Cell({
 
             {/* Status pills */}
             {cell.status === "running" && (
-              <span className="flex items-center gap-1.5 rounded bg-blue-100/80 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-500" />
+              <span className="flex items-center gap-1.5 rounded bg-neutral-100 px-2 py-0.5 text-[11px] font-medium text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 border border-neutral-200/60 dark:border-neutral-700/60">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
                 running
               </span>
             )}
             {cell.status === "error" && (
-              <span className="rounded bg-rose-100/80 px-2 py-0.5 text-[11px] font-medium text-rose-700 dark:bg-rose-950/60 dark:text-rose-300">
+              <span className="rounded bg-rose-100/80 px-2 py-0.5 text-[11px] font-medium text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 dark:border dark:border-rose-900/40">
                 error
               </span>
             )}
@@ -310,7 +311,7 @@ export function Cell({
             {/* Defined symbols pill */}
             {defines.length > 0 && (
               <span
-                className="rounded bg-emerald-50 px-2 py-0.5 font-mono text-[11px] text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/50 dark:border-emerald-800/50"
+                className="rounded bg-neutral-100 px-2 py-0.5 font-mono text-[11px] text-neutral-700 dark:bg-neutral-800/80 dark:text-neutral-300 border border-neutral-200/70 dark:border-neutral-700/60"
                 title={`Defines global symbols: ${defines.join(", ")}`}
               >
                 def: {defines.join(", ")}
@@ -320,7 +321,7 @@ export function Cell({
             {/* Downstream dependents pill */}
             {dependents.length > 0 && (
               <span
-                className="rounded bg-sky-50 px-2 py-0.5 font-mono text-[11px] text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200/50 dark:border-sky-800/50"
+                className="rounded bg-neutral-100 px-2 py-0.5 font-mono text-[11px] text-neutral-600 dark:bg-neutral-800/80 dark:text-neutral-300 border border-neutral-200/70 dark:border-neutral-700/60"
                 title={`Triggers ${dependents.length} downstream cells on execution`}
               >
                 → {dependents.length} {dependents.length === 1 ? "dep" : "deps"}
@@ -329,7 +330,7 @@ export function Cell({
 
             {dupSymbols.length > 0 && (
               <span
-                className="rounded bg-amber-100/80 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-950/60 dark:text-amber-300"
+                className="rounded bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-950/30 dark:text-amber-300 border border-amber-200/70 dark:border-amber-800/50"
                 title={`Duplicate symbol definition: ${dupSymbols.join(", ")}`}
               >
                 dup: {dupSymbols.join(", ")}
@@ -430,11 +431,19 @@ export function Cell({
         </div>
 
         {/* Outputs Container */}
-        {cell.outputs && cell.outputs.length > 0 && (
+        {((cell.outputs && cell.outputs.length > 0) || cell.inputRequest) && (
           <div className="flex flex-col gap-2 border-t border-neutral-100 bg-[#fafafa] p-3 dark:border-neutral-800/60 dark:bg-[#151515] max-h-[420px] overflow-y-auto scrollbar-thin">
             {cell.outputs.map((out, idx) => (
               <Output key={idx} output={out} />
             ))}
+            {cell.inputRequest && (
+              <InputPrompt
+                cellId={id}
+                prompt={cell.inputRequest.prompt}
+                password={cell.inputRequest.password}
+                ws={ws}
+              />
+            )}
           </div>
         )}
       </div>

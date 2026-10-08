@@ -3,6 +3,11 @@ export interface OutputData {
   data: any;
 }
 
+export interface InputPromptData {
+  prompt: string;
+  password?: boolean;
+}
+
 export interface CellData {
   id: string;
   source: string;
@@ -11,6 +16,7 @@ export interface CellData {
   status: "idle" | "running" | "error" | "aborted";
   executionCount?: number;
   executionDuration?: number;
+  inputRequest?: InputPromptData | null;
 }
 
 export type ClientMsg =
@@ -24,7 +30,8 @@ export type ClientMsg =
   | { op: "delete_cell"; cell_id: string }
   | { op: "move_cell"; cell_id: string; direction: "up" | "down" }
   | { op: "reorder_cells"; cell_ids: string[] }
-  | { op: "complete"; cell_id: string; code: string; cursor_pos: number };
+  | { op: "complete"; cell_id: string; code: string; cursor_pos: number }
+  | { op: "input_reply"; value: string; cell_id?: string };
 
 export type ServerMsg =
   | { op: "event"; cell_id: string; kind: string; data: any }

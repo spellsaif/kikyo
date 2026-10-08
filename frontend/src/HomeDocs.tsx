@@ -30,9 +30,9 @@ export function HomeDocs({
   return (
     <div className="mx-auto max-w-4xl px-6 py-10 transition-colors animate-in fade-in duration-150">
       {/* Notion Cover Icon & Header */}
-      <div className="mb-8 border-b border-neutral-200/80 pb-8 dark:border-neutral-800">
-        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-neutral-100/90 p-2 dark:bg-neutral-800/80 border border-neutral-200/80 dark:border-neutral-700/80 shadow-xs">
-          <img src="/favicon.svg" alt="Kikyo Logo" className="h-full w-full object-contain" />
+      <div className="mb-8 border-b border-neutral-200/60 pb-8 dark:border-neutral-800/60">
+        <div className="mb-4 flex items-center">
+          <img src="/kikyo-logo.svg" alt="Kikyo Logo" className="h-20 w-20 object-contain drop-shadow-sm" />
         </div>
         <div className="flex items-center gap-2 mb-2">
           <h1 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
@@ -138,9 +138,9 @@ export function HomeDocs({
         <div className="mb-4 flex items-center gap-3 border-b border-neutral-200 dark:border-neutral-800 text-sm font-medium">
           <button
             onClick={() => setActiveTab("overview")}
-            className={`flex items-center gap-1.5 pb-2.5 border-b-2 transition-colors ${
+            className={`flex items-center gap-1.5 pb-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === "overview"
-                ? "border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"
+                ? "border-neutral-900 text-neutral-900 dark:border-neutral-100 dark:text-neutral-100 font-semibold"
                 : "border-transparent text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200"
             }`}
           >
@@ -149,9 +149,9 @@ export function HomeDocs({
           </button>
           <button
             onClick={() => setActiveTab("shortcuts")}
-            className={`flex items-center gap-1.5 pb-2.5 border-b-2 transition-colors ${
+            className={`flex items-center gap-1.5 pb-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === "shortcuts"
-                ? "border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"
+                ? "border-neutral-900 text-neutral-900 dark:border-neutral-100 dark:text-neutral-100 font-semibold"
                 : "border-transparent text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200"
             }`}
           >
@@ -160,9 +160,9 @@ export function HomeDocs({
           </button>
           <button
             onClick={() => setActiveTab("architecture")}
-            className={`flex items-center gap-1.5 pb-2.5 border-b-2 transition-colors ${
+            className={`flex items-center gap-1.5 pb-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === "architecture"
-                ? "border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"
+                ? "border-neutral-900 text-neutral-900 dark:border-neutral-100 dark:text-neutral-100 font-semibold"
                 : "border-transparent text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200"
             }`}
           >
@@ -173,7 +173,7 @@ export function HomeDocs({
 
         {activeTab === "overview" && (
           <div className="space-y-4 text-[13.5px] text-neutral-600 dark:text-neutral-300 leading-relaxed">
-            <div className="rounded-xl border border-neutral-200/80 bg-neutral-50/60 p-4.5 dark:border-neutral-800 dark:bg-[#171717]">
+            <div className="rounded-xl border border-neutral-200/80 bg-neutral-50/60 p-4.5 dark:border-neutral-800 dark:bg-[#121215]">
               <div className="flex items-center gap-2 font-semibold text-neutral-900 dark:text-neutral-100 text-sm mb-1.5">
                 <Zap size={16} className="text-amber-500" />
                 <h3>1. Reactive Flow vs Classic Execution</h3>
@@ -191,7 +191,7 @@ export function HomeDocs({
               </ul>
             </div>
 
-            <div className="rounded-xl border border-neutral-200/80 bg-neutral-50/60 p-4.5 dark:border-neutral-800 dark:bg-[#171717]">
+            <div className="rounded-xl border border-neutral-200/80 bg-neutral-50/60 p-4.5 dark:border-neutral-800 dark:bg-[#121215]">
               <div className="flex items-center gap-2 font-semibold text-neutral-900 dark:text-neutral-100 text-sm mb-1.5">
                 <FileCode2 size={16} className="text-blue-500" />
                 <h3>2. Pure Python Script Storage (.py)</h3>
@@ -201,12 +201,12 @@ export function HomeDocs({
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-neutral-600 dark:text-neutral-400">
                 <li>Edit files in VS Code, Neovim, or Kikyo interchangeably.</li>
-                <li>Run scripts directly in your terminal: <code className="font-mono">python notebooks/analysis.py</code>.</li>
+                <li>Run scripts directly in your terminal: <code className="font-mono">python notebooks/my_notebook.py</code>.</li>
                 <li>Outputs and display figures are cached in an append-only JSONL sidecar (<code className="font-mono">.kout</code>) that can be gitignored.</li>
               </ul>
             </div>
 
-            <div className="rounded-xl border border-neutral-200/80 bg-neutral-50/60 p-4.5 dark:border-neutral-800 dark:bg-[#171717]">
+            <div className="rounded-xl border border-neutral-200/80 bg-neutral-50/60 p-4.5 dark:border-neutral-800 dark:bg-[#121215]">
               <div className="flex items-center gap-2 font-semibold text-neutral-900 dark:text-neutral-100 text-sm mb-1.5">
                 <Layers size={16} className="text-purple-500" />
                 <h3>3. Drag & Drop Reordering</h3>
@@ -216,7 +216,7 @@ export function HomeDocs({
               </p>
             </div>
 
-            <div className="rounded-xl border border-neutral-200/80 bg-neutral-50/60 p-4.5 dark:border-neutral-800 dark:bg-[#171717]">
+            <div className="rounded-xl border border-neutral-200/80 bg-neutral-50/60 p-4.5 dark:border-neutral-800 dark:bg-[#121215]">
               <div className="flex items-center gap-2 font-semibold text-neutral-900 dark:text-neutral-100 text-sm mb-1.5">
                 <Package size={16} className="text-emerald-500" />
                 <h3>4. Package Installation & Output Scrolling</h3>
@@ -238,7 +238,7 @@ export function HomeDocs({
                   <th className="p-3.5">Mode</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-150 dark:divide-neutral-800 font-mono text-[13px]">
+              <tbody className="divide-y divide-neutral-200/60 dark:divide-neutral-800/60 font-mono text-[13px]">
                 <tr>
                   <td className="p-3.5 font-sans font-medium text-neutral-800 dark:text-neutral-200">Run cell & advance</td>
                   <td className="p-3.5"><kbd className="rounded border px-2 py-0.5 bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 text-xs">Shift + Enter</kbd></td>

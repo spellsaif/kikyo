@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import {
   Play,
   Download,
@@ -130,9 +130,33 @@ function SortableCellItem({
   );
 }
 
+function getInitialNav(): { name: string; view: "notebook" | "home" } {
+  if (typeof window === "undefined") {
+    return { name: "", view: "notebook" };
+  }
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("view") === "home") {
+    return { name: "", view: "home" };
+  }
+  const fromQuery = params.get("notebook") || params.get("nb");
+  if (fromQuery) {
+    return { name: fromQuery, view: "notebook" };
+  }
+  const hash = window.location.hash.replace(/^#\/?(notebook\/)?/, "");
+  if (hash) {
+    return { name: hash, view: "notebook" };
+  }
+  const last = localStorage.getItem("kikyo_last_notebook");
+  if (last) {
+    return { name: last, view: "notebook" };
+  }
+  return { name: "", view: "notebook" };
+}
+
 export default function App() {
-  const [activeNb, setActiveNb] = useState("analysis");
-  const [viewMode, setViewMode] = useState<"notebook" | "home">("notebook");
+  const initialNav = useMemo(() => getInitialNav(), []);
+  const [activeNb, setActiveNb] = useState(initialNav.name);
+  const [viewMode, setViewMode] = useState<"notebook" | "home">(initialNav.view);
   const [isLoaded, setIsLoaded] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -198,6 +222,38 @@ export default function App() {
     setTitleError(null);
   }, [activeNb, setNotebookName]);
 
+  // Keep URL query param and localStorage in sync with active notebook & view mode
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    if (viewMode === "home") {
+      url.searchParams.set("view", "home");
+      url.searchParams.delete("notebook");
+      url.searchParams.delete("nb");
+      window.history.replaceState(null, "", url.toString());
+    } else if (activeNb) {
+      localStorage.setItem("kikyo_last_notebook", activeNb);
+      url.searchParams.set("notebook", activeNb);
+      url.searchParams.delete("view");
+      url.searchParams.delete("nb");
+      window.history.replaceState(null, "", url.toString());
+    }
+  }, [activeNb, viewMode]);
+
+  // Listen to browser Back / Forward buttons
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handlePopState = () => {
+      const nav = getInitialNav();
+      setViewMode(nav.view);
+      if (nav.name) {
+        setActiveNb(nav.name);
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
   // Fetch notebook list
   useEffect(() => {
     fetch("/api/notebooks")
@@ -205,8 +261,15 @@ export default function App() {
       .then((list: string[]) => {
         setNotebooks(list);
         if (list.length > 0) {
-          if (!activeNb || !list.includes(activeNb)) {
-            setActiveNb(list[0]);
+          if (activeNb && list.includes(activeNb)) {
+            // Keep active notebook intact across refresh!
+          } else {
+            const nav = getInitialNav();
+            if (nav.name && list.includes(nav.name)) {
+              setActiveNb(nav.name);
+            } else {
+              setActiveNb(list[0]);
+            }
           }
         } else {
           setActiveNb("");
@@ -214,7 +277,7 @@ export default function App() {
         }
       })
       .catch((e) => console.error("Error loading notebooks:", e));
-  }, [setNotebooks]);
+  }, [setNotebooks, activeNb]);
 
   // Fetch active notebook cells
   useEffect(() => {
@@ -621,17 +684,17 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-neutral-800 transition-colors dark:bg-[#191919] dark:text-neutral-100 font-sans antialiased">
+    <div className="min-h-screen bg-white text-neutral-800 transition-colors dark:bg-[#09090b] dark:text-neutral-100 font-sans antialiased">
       {/* Top Bar Navigation */}
-      <header className="sticky top-0 z-40 flex h-11 items-center justify-between border-b border-neutral-200/80 bg-white/95 px-4 backdrop-blur-xs dark:border-neutral-800/80 dark:bg-[#191919]/95 text-xs">
+      <header className="sticky top-0 z-40 flex h-11 items-center justify-between border-b border-neutral-200/70 bg-white/95 px-4 backdrop-blur-xs dark:border-neutral-800/70 dark:bg-[#09090b]/95 text-xs">
         {/* Left: Breadcrumbs & Notebook Selector */}
         <div className="flex items-center gap-1.5 text-neutral-500 dark:text-neutral-400">
           <button
             onClick={() => setViewMode(viewMode === "home" && activeNb ? "notebook" : "home")}
-            className="flex items-center gap-2 font-semibold text-neutral-800 hover:text-blue-600 dark:text-neutral-100 dark:hover:text-blue-400 transition-colors mr-1 group"
+            className="flex items-center gap-2 font-semibold text-neutral-800 hover:text-neutral-900 dark:text-neutral-100 dark:hover:text-white transition-colors mr-1 group cursor-pointer"
             title="Toggle Kikyo Home & Documentation"
           >
-            <img src="/favicon.svg" alt="Kikyo Logo" className="h-4.5 w-4.5 transition-transform group-hover:scale-110" />
+            <img src="/kikyo-logo.svg" alt="Kikyo Logo" className="h-7 w-7 transition-transform group-hover:scale-105 shrink-0" />
             <span className="font-semibold tracking-tight text-[13px]">Kikyo</span>
           </button>
           <span className="text-neutral-300 dark:text-neutral-700">/</span>
@@ -822,7 +885,7 @@ export default function App() {
                       <RotateCcw size={12} />
                       <span>Restart Python kernel</span>
                     </button>
-                    <div className="my-1 border-t border-neutral-150 dark:border-neutral-800" />
+                    <div className="my-1 border-t border-neutral-200/60 dark:border-neutral-800" />
                     <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                       Export
                     </div>
@@ -840,7 +903,7 @@ export default function App() {
                       <FileCode2 size={12} />
                       <span>Python Script (.py)</span>
                     </a>
-                    <div className="my-1 border-t border-neutral-150 dark:border-neutral-800" />
+                    <div className="my-1 border-t border-neutral-200/60 dark:border-neutral-800" />
                   </>
                 )}
 
@@ -884,7 +947,7 @@ export default function App() {
 
                 {activeNb && viewMode === "notebook" && (
                   <>
-                    <div className="my-1 border-t border-neutral-150 dark:border-neutral-800" />
+                    <div className="my-1 border-t border-neutral-200/60 dark:border-neutral-800" />
                     <button
                       onClick={() => {
                         setDeleteTarget(activeNb);
@@ -966,7 +1029,7 @@ export default function App() {
         /* Main Document Canvas */
         <main className={`mx-auto w-full py-8 transition-all duration-150 ${fullWidth ? "max-w-7xl px-8" : "max-w-4xl px-6"}`}>
           {/* Document Notion Header */}
-          <div className="mb-6 border-b border-neutral-150 pb-6 dark:border-neutral-800/70">
+          <div className="mb-6 border-b border-neutral-200/60 pb-6 dark:border-neutral-800/60">
             <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200/80 bg-neutral-100/70 text-neutral-600 dark:border-neutral-800 dark:bg-neutral-800/60 dark:text-neutral-300 select-none">
               <FileCode2 size={16} strokeWidth={1.75} />
             </div>
@@ -1195,10 +1258,10 @@ export default function App() {
           onClick={() => setShowShortcuts(false)}
         >
           <div
-            className="w-full max-w-lg rounded-xl border border-neutral-200 bg-white p-5 shadow-2xl dark:border-neutral-800 dark:bg-[#1f1f1f]"
+            className="w-full max-w-lg rounded-xl border border-neutral-200 bg-white p-5 shadow-2xl dark:border-neutral-800 dark:bg-[#121215]"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="mb-4 flex items-center justify-between border-b border-neutral-150 pb-3 dark:border-neutral-800">
+            <div className="mb-4 flex items-center justify-between border-b border-neutral-200/60 pb-3 dark:border-neutral-800">
               <div className="flex items-center gap-2">
                 <span className="font-semibold text-neutral-900 dark:text-neutral-100">
                   Jupyter Keyboard Navigation
